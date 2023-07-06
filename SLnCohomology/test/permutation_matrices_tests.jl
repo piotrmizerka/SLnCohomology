@@ -34,21 +34,21 @@ end
 end
 
 @testset "permutation_matrix" begin
-    identity_perm = PermutationGroups.Perm([1 2 3 4])
-    perm1 = PermutationGroups.Perm([3 2 1])
-    perm2 = PermutationGroups.Perm([1 3 2 4])
-    perm3 = PermutationGroups.Perm([4 3 1 2])
-    perm4 = PermutationGroups.Perm([4 1 5 3 2])
+    identity_perm = PermutationGroups.Perm([1,2,3,4])
+    perm1 = PermutationGroups.Perm([3,2,1])
+    perm2 = PermutationGroups.Perm([1,3,2,4])
+    perm3 = PermutationGroups.Perm([4,3,1,2])
+    perm4 = PermutationGroups.Perm([4,1,5,3,2])
     @test SLnCohomology.permutation_matrix(identity_perm) == [
-        0 0 1;
-        0 1 0;
-        1 0 0
-    ]
-    @test SLnCohomology.permutation_matrix(perm1) == [
         1 0 0 0;
         0 1 0 0;
         0 0 1 0;
-        0 0 0 1
+        0 0 0 1    
+    ]
+    @test SLnCohomology.permutation_matrix(perm1) == [
+        0 0 1;
+        0 1 0;
+        1 0 0
     ]
     @test SLnCohomology.permutation_matrix(perm2) == [
         1 0 0 0;
@@ -75,25 +75,27 @@ end
     p = 2
     matrices_dict, matrices_tuples_order = SLnCohomology.slnp(3,p)
     perm_mats = SLnCohomology.permutation_matrices(matrices_tuples_order, matrices_dict, p)
-    sl4 = MatrixGroups.SpecialLinearGroup{3}(Int8)
-    e12, e13, e21, e23, e31, e32 = S = gens(sl4)
+    sl3 = MatrixGroups.SpecialLinearGroup{3}(Int8)
+    e12, e13, e21, e23, e31, e32 = S = gens(sl3)
     S_inv =[S; inv.(S)]
-    RG = LowCohomologySOS.group_ring(sl4,S_inv)
+    half_basis, sizes = Groups.wlmetric_ball(S_inv, radius = 2)
+    RG = LowCohomologySOS.group_ring(sl3,half_basis)
     slnp_order_ = SLnCohomology.slnp_order(3,p)
     for s in S_inv
         rep_mat = SLnCohomology.representing_matrix(RG(s),p,perm_mats)
         @test size(rep_mat) == (slnp_order_,slnp_order_) # the sieze of perm matrix must be equal to SLₙ(p) order
-        @test length(SparseArrays.nonzeroinds(rep_mat)) == slnp_order_ # the number of nonzero indices must equal to perm degree
+        @test length(SparseArrays.nonzeroinds(sparse(vec(rep_mat)))) == slnp_order_ # the number of nonzero indices must equal to perm degree
     end
     # representing_matrix must preserve group ring structure:
+    rep_mat(ξ) = SLnCohomology.representing_matrix(ξ,p,perm_mats)
     for i in 1:10
-        i, j = rand(1:24), rand(1:24)
-        ξ = RG(S_inv[i]^rand(2:3)*S_inv[j]*S_inv^(-1)) # test on sth not too trivial
-        η = RG(S_inv[j]^rand(2:3)*S_inv[i]*S_inv^(-2))
-        πξ = SLnCohomology.representing_matrix(ξ)
-        πη = SLnCohomology.representing_matrix(η)
-        πξ_plus_η = SLnCohomology.representing_matrix(ξ+η)
-        πξ_times_η = SLnCohomology.representing_matrix(ξ*η)
+        i, j = rand(1:12), rand(1:12)
+        ξ = RG(S_inv[i]*S_inv[j]) # test on sth not too trivial
+        η = RG(S_inv[j]*S_inv[i]^(-1))
+        πξ = rep_mat(ξ)
+        πη = rep_mat(η)
+        πξ_plus_η = rep_mat(ξ+η)
+        πξ_times_η = rep_mat(ξ*η)
         @test πξ_plus_η == πξ+πη
         @test πξ_times_η == πξ*πη
     end

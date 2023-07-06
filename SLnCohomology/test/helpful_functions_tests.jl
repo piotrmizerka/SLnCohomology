@@ -13,7 +13,7 @@
     S_inv =[S; inv.(S)]
     elt_list = [(S[1],1),(S[2],-1),(S[3],-1),(S[4],1)]
     RG = LowCohomologySOS.group_ring(sl3,S_inv)
-    averaged_rep_ = SLnCohomology.averaged_rep(elt_list)
+    averaged_rep_ = SLnCohomology.averaged_rep(elt_list,RG)
     proper_average = 1//4*RG(S[1])-1//4*RG(S[2])-1//4*RG(S[3])+1//4*RG(S[4])
     @test averaged_rep_ == proper_average
 end

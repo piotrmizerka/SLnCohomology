@@ -12,7 +12,7 @@ end
 function slnp(n::Integer,p::Integer)
     result = Dict()
     values = 0:(p-1)
-    tuples = collect(IterTools.product(fill(values, n^2)...))
+    tuples = collect(Iterators.product(fill(values, n^2)...))
     i = 0
     matrices_tuples_order = []
     for tuple in tuples

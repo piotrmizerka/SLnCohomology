@@ -3,7 +3,6 @@ module SLnCohomology
 using Combinatorics
 using GAP
 using Groups
-using IterTools
 using JSON
 using JuMP
 using LinearAlgebra

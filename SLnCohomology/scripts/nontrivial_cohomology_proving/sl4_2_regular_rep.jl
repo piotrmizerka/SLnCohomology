@@ -1,7 +1,6 @@
 include("../../src/permutation_matrices.jl")
 
 using LinearAlgebra
-using IterTools
 using PermutationGroups
 using SLnCohomology
 using SparseArrays

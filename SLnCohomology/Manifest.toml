@@ -2,7 +2,7 @@
 
 julia_version = "1.8.3"
 manifest_format = "2.0"
-project_hash = "61a89c40acf705afdeab9e9e67abe19bd38ff5f0"
+project_hash = "b7dbde3c769dde7404410f96e82ce2aac3ec6d6a"
 
 [[deps.AMD]]
 deps = ["Libdl", "LinearAlgebra", "SparseArrays", "Test"]
@@ -18,9 +18,9 @@ version = "0.27.10"
 
 [[deps.AbstractFFTs]]
 deps = ["ChainRulesCore", "LinearAlgebra"]
-git-tree-sha1 = "8bc0aaec0ca548eb6cf5f0d7d16351650c1ee956"
+git-tree-sha1 = "cad4c758c0038eea30394b1b671526921ca85b21"
 uuid = "621f4979-c628-5d54-868e-fcf4e3e8185c"
-version = "1.3.2"
+version = "1.4.0"
 
 [[deps.Accessors]]
 deps = ["CompositionsBase", "ConstructionBase", "Dates", "InverseFunctions", "LinearAlgebra", "MacroTools", "Requires", "Test"]
@@ -103,10 +103,10 @@ uuid = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
 version = "1.16.0"
 
 [[deps.ChangesOfVariables]]
-deps = ["LinearAlgebra", "Test"]
-git-tree-sha1 = "f84967c4497e0e1955f9a582c232b02847c5f589"
+deps = ["InverseFunctions", "LinearAlgebra", "Test"]
+git-tree-sha1 = "2fba81a302a7be671aefe194f0525ef231104e7f"
 uuid = "9e997f8a-9a97-42d5-a9f1-ce6bfc15e2c0"
-version = "0.1.7"
+version = "0.1.8"
 
 [[deps.CodecBzip2]]
 deps = ["Bzip2_jll", "Libdl", "TranscodingStreams"]
@@ -260,9 +260,9 @@ version = "0.9.7"
 
 [[deps.GAP_jll]]
 deps = ["Artifacts", "GMP_jll", "JLLWrappers", "Libdl", "Pkg", "Readline_jll", "Zlib_jll"]
-git-tree-sha1 = "d38be996cf65556304900008cab7ba733d2988d1"
+git-tree-sha1 = "bafadb83650024cdbdcd276ef4afb13d8d4520ab"
 uuid = "5cd7a574-2c56-5be2-91dc-c8bc375b9ddf"
-version = "400.1200.200+2"
+version = "400.1200.200+5"
 
 [[deps.GAP_lib_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -272,9 +272,9 @@ version = "400.1201.200+0"
 
 [[deps.GAP_pkg_juliainterface_jll]]
 deps = ["Artifacts", "GAP_jll", "GAP_lib_jll", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "9fbdddf83f95766e29802f4c59935fea109fd7c3"
+git-tree-sha1 = "379a14d002777954736d0547e10cf627c8fc4263"
 uuid = "ba154793-3a7d-51ee-8800-e295b0cf7374"
-version = "0.800.202+2"
+version = "0.800.202+4"
 
 [[deps.GMP_jll]]
 deps = ["Artifacts", "Libdl"]
@@ -319,17 +319,11 @@ git-tree-sha1 = "5ab7744289be503d76a944784bac3f2df7b809af"
 uuid = "d1acc4aa-44c8-5952-acd4-ba5d80a2a253"
 version = "0.20.9"
 
-[[deps.IntervalMatrices]]
-deps = ["IntervalArithmetic", "LinearAlgebra", "Random", "Reexport"]
-git-tree-sha1 = "61ea4d2bc6a75f82abbbdbf7ec6747432cf31767"
-uuid = "5c1f47dc-42dd-5697-8aaa-4d102d140ba9"
-version = "0.8.4"
-
 [[deps.InverseFunctions]]
 deps = ["Test"]
-git-tree-sha1 = "6667aadd1cdee2c6cd068128b3d226ebc4fb0c67"
+git-tree-sha1 = "edd1c1ac227767c75e8518defdf6e48dbfa7c3b0"
 uuid = "3587e190-3f89-42d0-90ee-14403ec27112"
-version = "0.1.9"
+version = "0.1.10"
 
 [[deps.IrrationalConstants]]
 git-tree-sha1 = "630b497eafcc20001bba38a4651b327dcfc491d2"
@@ -422,7 +416,7 @@ uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 
 [[deps.LowCohomologySOS]]
 deps = ["COSMO", "Dates", "Groups", "GroupsCore", "IntervalArithmetic", "JuMP", "Kronecker", "LinearAlgebra", "Logging", "PermutationGroups", "PropertyT", "SCS", "Serialization", "SparseArrays", "StarAlgebras", "SymbolicWedderburn"]
-git-tree-sha1 = "e2e446988d4c05a3822243d069221da623c31a71"
+git-tree-sha1 = "af6f442fb26f224f345814893ebb0621fc4bfcbe"
 repo-rev = "oxford_stuff"
 repo-url = "https://github.com/piotrmizerka/LowCohomologySOS.git"
 uuid = "70c9f613-c550-58ca-b626-6da403f9846d"
@@ -505,10 +499,10 @@ uuid = "356022a1-0364-5f58-8944-0da4b18d706f"
 version = "0.2.50"
 
 [[deps.Ncurses_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "e3fb71f3c971fdc8523f9ef3906691124f3048a2"
+deps = ["Artifacts", "JLLWrappers", "Libdl"]
+git-tree-sha1 = "bd4eb207e17878ceec404e74130639b6dda8b63b"
 uuid = "68e3532b-a499-55ff-9963-d1c0c0748b3a"
-version = "6.2.0+0"
+version = "6.4.1+0"
 
 [[deps.NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
@@ -603,12 +597,12 @@ uuid = "92933f4c-e287-5a05-a399-4b506db050ca"
 version = "1.7.2"
 
 [[deps.PropertyT]]
-deps = ["Groups", "IntervalArithmetic", "IntervalMatrices", "JuMP", "LinearAlgebra", "ProgressMeter", "SparseArrays", "StaticArrays", "SymbolicWedderburn"]
-git-tree-sha1 = "eeb3b670515baf5e7459da0d192e7a7370faeefa"
-repo-rev = "master"
+deps = ["Groups", "IntervalArithmetic", "JuMP", "LinearAlgebra", "ProgressMeter", "SparseArrays", "StaticArrays", "SymbolicWedderburn"]
+git-tree-sha1 = "5de1285f8180a6d92231e3e1b8857bcf49d03865"
+repo-rev = "0127d05594b83dd03b2908ade48368cf626e8620"
 repo-url = "https://github.com/kalmarek/PropertyT.jl.git"
 uuid = "03b72c93-0167-51e2-8a1e-eb4ff1fb940d"
-version = "0.5.0"
+version = "0.4.0"
 
 [[deps.QDLDL]]
 deps = ["AMD", "LinearAlgebra", "SparseArrays"]
@@ -631,10 +625,10 @@ uuid = "fb686558-2515-59ef-acaa-46db3789a887"
 version = "0.4.3"
 
 [[deps.Readline_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Ncurses_jll", "Pkg"]
-git-tree-sha1 = "7cfd44e2889fcabf8ee80dad89bccb3756d4e778"
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Ncurses_jll"]
+git-tree-sha1 = "9d70e0c890a6c7ca3eb1ca0eaabba4d34795b7fb"
 uuid = "05236dd9-4125-5232-aa7c-9ec0c9b2c25a"
-version = "8.1.1+1"
+version = "8.2.1+0"
 
 [[deps.RecipesBase]]
 deps = ["PrecompileTools"]
@@ -751,15 +745,15 @@ version = "0.1.15"
 
 [[deps.StarAlgebras]]
 deps = ["LinearAlgebra", "SparseArrays"]
-git-tree-sha1 = "265b89a5dfb38fe94ad48b997a253b2393fce6f1"
+git-tree-sha1 = "43a77d942a80fee6d2e123ac27d188fffdd9e869"
 uuid = "0c0c59c1-dc5f-42e9-9a8b-b5dc384a6cd1"
-version = "0.2.0"
+version = "0.1.7"
 
 [[deps.StaticArrays]]
 deps = ["LinearAlgebra", "Random", "StaticArraysCore", "Statistics"]
-git-tree-sha1 = "832afbae2a45b4ae7e831f86965469a24d1d8a83"
+git-tree-sha1 = "0da7e6b70d1bb40b1ace3b576da9ea2992f76318"
 uuid = "90137ffa-7385-5640-81b9-e52037218182"
-version = "1.5.26"
+version = "1.6.0"
 
 [[deps.StaticArraysCore]]
 git-tree-sha1 = "6b7ba252635a5eff6a0b0664a41ee140a1c9e72a"
@@ -787,10 +781,10 @@ deps = ["Libdl", "LinearAlgebra", "Serialization", "SparseArrays"]
 uuid = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
 
 [[deps.SymbolicWedderburn]]
-deps = ["Cyclotomics", "GroupsCore", "LinearAlgebra", "PermutationGroups", "PrecompileTools", "Primes", "SparseArrays", "StarAlgebras"]
-git-tree-sha1 = "ceda4647107b786fef030e141210674a11c20fb4"
+deps = ["Cyclotomics", "GroupsCore", "LinearAlgebra", "PermutationGroups", "Primes", "SparseArrays", "StarAlgebras"]
+git-tree-sha1 = "a0c579485c14031aab58ab71425af8516c6b6731"
 uuid = "858aa9a9-4c7c-4c62-b466-2421203962a2"
-version = "0.3.5"
+version = "0.3.2"
 
 [[deps.TOML]]
 deps = ["Dates"]

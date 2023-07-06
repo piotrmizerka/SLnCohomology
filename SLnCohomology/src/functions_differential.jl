@@ -1,7 +1,7 @@
 using LinearAlgebra
 using Combinatorics
 using Serialization
-include("Plesken-Souvignier.jl");
+include("Plesken_Souvignier.jl");
 
 function quadratic_form(matrix)
     form = matrix*transpose(matrix)

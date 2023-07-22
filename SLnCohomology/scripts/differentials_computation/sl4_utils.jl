@@ -23,17 +23,17 @@ sln_gens = gens(sln)
 sl4_bound_stab = deserialize(joinpath(@__DIR__, "./sl4_bound_stab.sjl"))
 
 # Compute the stabilisers as subgroups of SL(n,ℤ)
-m3_stabs = [[(gelt_from_matrix(M),σ) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][3]]
-m4_stabs = [[(gelt_from_matrix(M),σ) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][4]]
-m5_stabs = [[(gelt_from_matrix(M),σ) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][5]]
-m6_stabs = [[(gelt_from_matrix(M),σ) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][6]]
-m7_stabs = [[(gelt_from_matrix(M),σ) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][7]]
+m3_stabs = [[(gelt_from_matrix(M,sln),σ) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][3]]
+m4_stabs = [[(gelt_from_matrix(M,sln),σ) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][4]]
+m5_stabs = [[(gelt_from_matrix(M,sln),σ) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][5]]
+m6_stabs = [[(gelt_from_matrix(M,sln),σ) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][6]]
+m7_stabs = [[(gelt_from_matrix(M,sln),σ) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][7]]
 
-m3_stabsx = [[gelt_from_matrix(M) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][3]]
-m4_stabsx = [[gelt_from_matrix(M) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][4]]
-m5_stabsx = [[gelt_from_matrix(M) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][5]]
-m6_stabsx = [[gelt_from_matrix(M) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][6]]
-m7_stabsx = [[gelt_from_matrix(M) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][7]]
+m3_stabsx = [[gelt_from_matrix(M,sln) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][3]]
+m4_stabsx = [[gelt_from_matrix(M,sln) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][4]]
+m5_stabsx = [[gelt_from_matrix(M,sln) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][5]]
+m6_stabsx = [[gelt_from_matrix(M,sln) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][6]]
+m7_stabsx = [[gelt_from_matrix(M,sln) for (M,σ) in stab] for stab in sl4_bound_stab["stabilisers"][7]]
 
 # Compute the support (i.e. half_basis) for the group ring over which we'll try to find a spectral gap.
 # half_basis is quite minimalistic - we just add to half_basis the coset elements appearing in the differentials.
@@ -42,7 +42,7 @@ for k in 4:8
     for i in eachindex(sl4_bound_stab["boundaries"][k])
         for j in eachindex(sl4_bound_stab["boundaries"][k][i])
             coset = sl4_bound_stab["boundaries"][k][i][j]["orbit_coset_with_orientation"]
-            d_union[k] = union(d_union[k],[gelt_from_matrix(M) for (M,σ) in coset])
+            d_union[k] = union(d_union[k],[gelt_from_matrix(M,sln) for (M,σ) in coset])
         end
     end
 end
@@ -68,7 +68,7 @@ d = Dict([(k,i,j) => 0//1*zero(RG_Δ[k-1]) for k in 4:8 for i in 1:cells_number[
 for k in 4:8
     for j in eachindex(sl4_bound_stab["boundaries"][k])
         for summand in sl4_bound_stab["boundaries"][k][j]
-            coset_orient = [(gelt_from_matrix(M),σ) for (M,σ) in summand["orbit_coset_with_orientation"]]
+            coset_orient = [(gelt_from_matrix(M,sln),σ) for (M,σ) in summand["orbit_coset_with_orientation"]]
             summand_in_RG = summand["sign"]*averaged_rep(coset_orient,RG_Δ[k-1])
             d[k,summand["orbit_standard_cell"],j] += summand_in_RG
         end

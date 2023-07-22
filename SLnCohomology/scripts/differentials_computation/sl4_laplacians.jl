@@ -31,27 +31,27 @@ d₈x = LowCohomologySOS.embed.(identity, d₈, Ref(RG_Δ[7]));
 
 # The stabiliser parts which we have to add to get free modules.
 # Hopefully the stabilisers' elements belong to the half_bases.
-dim3_stab_part = reshape([one(RG_Δ[3])-averaged_rep(m3_stabs[1], half_basis_Δ[3], RG_Δ[3])], 1, 1)
+dim3_stab_part = reshape([one(RG_Δ[3])-averaged_rep(m3_stabs[1], RG_Δ[3])], 1, 1)
 dim4_stab_part = [
-    one(RG_Δ[4])-averaged_rep(m4_stabs[1], half_basis_Δ[4], RG_Δ[4]) zero(RG_Δ[4]) zero(RG_Δ[4]);
-    zero(RG_Δ[4]) one(RG_Δ[4])-averaged_rep(m4_stabs[2], half_basis_Δ[4], RG_Δ[4]) zero(RG_Δ[4]);
-    zero(RG_Δ[4]) zero(RG_Δ[4]) one(RG_Δ[4])-averaged_rep(m4_stabs[3], half_basis_Δ[4], RG_Δ[4]);
+    one(RG_Δ[4])-averaged_rep(m4_stabs[1], RG_Δ[4]) zero(RG_Δ[4]) zero(RG_Δ[4]);
+    zero(RG_Δ[4]) one(RG_Δ[4])-averaged_rep(m4_stabs[2], RG_Δ[4]) zero(RG_Δ[4]);
+    zero(RG_Δ[4]) zero(RG_Δ[4]) one(RG_Δ[4])-averaged_rep(m4_stabs[3], RG_Δ[4]);
 ]
 dim5_stab_part = [
-    one(RG_Δ[5])-averaged_rep(m5_stabs[1], half_basis_Δ[5], RG_Δ[5]) zero(RG_Δ[5]) zero(RG_Δ[5]) zero(RG_Δ[5]);
-    zero(RG_Δ[5]) one(RG_Δ[5])-averaged_rep(m5_stabs[2], half_basis_Δ[5], RG_Δ[5]) zero(RG_Δ[5]) zero(RG_Δ[5]);
-    zero(RG_Δ[5]) zero(RG_Δ[5]) one(RG_Δ[5])-averaged_rep(m5_stabs[3], half_basis_Δ[5], RG_Δ[5]) zero(RG_Δ[5]);
-    zero(RG_Δ[5]) zero(RG_Δ[5]) zero(RG_Δ[5]) one(RG_Δ[5])-averaged_rep(m5_stabs[4], half_basis_Δ[5], RG_Δ[5])
+    one(RG_Δ[5])-averaged_rep(m5_stabs[1], RG_Δ[5]) zero(RG_Δ[5]) zero(RG_Δ[5]) zero(RG_Δ[5]);
+    zero(RG_Δ[5]) one(RG_Δ[5])-averaged_rep(m5_stabs[2], RG_Δ[5]) zero(RG_Δ[5]) zero(RG_Δ[5]);
+    zero(RG_Δ[5]) zero(RG_Δ[5]) one(RG_Δ[5])-averaged_rep(m5_stabs[3], RG_Δ[5]) zero(RG_Δ[5]);
+    zero(RG_Δ[5]) zero(RG_Δ[5]) zero(RG_Δ[5]) one(RG_Δ[5])-averaged_rep(m5_stabs[4], RG_Δ[5])
 ]
 dim6_stab_part = [
-    one(RG_Δ[6])-averaged_rep(m6_stabs[1], half_basis_Δ[6], RG_Δ[6]) zero(RG_Δ[6]) zero(RG_Δ[6]) zero(RG_Δ[6]);
-    zero(RG_Δ[6]) one(RG_Δ[6])-averaged_rep(m6_stabs[2], half_basis_Δ[6], RG_Δ[6]) zero(RG_Δ[6]) zero(RG_Δ[6]);
-    zero(RG_Δ[6]) zero(RG_Δ[6]) one(RG_Δ[6])-averaged_rep(m6_stabs[3], half_basis_Δ[6], RG_Δ[6]) zero(RG_Δ[6]);
-    zero(RG_Δ[6]) zero(RG_Δ[6]) zero(RG_Δ[6]) one(RG_Δ[6])-averaged_rep(m6_stabs[4], half_basis_Δ[6], RG_Δ[6])
+    one(RG_Δ[6])-averaged_rep(m6_stabs[1], RG_Δ[6]) zero(RG_Δ[6]) zero(RG_Δ[6]) zero(RG_Δ[6]);
+    zero(RG_Δ[6]) one(RG_Δ[6])-averaged_rep(m6_stabs[2], RG_Δ[6]) zero(RG_Δ[6]) zero(RG_Δ[6]);
+    zero(RG_Δ[6]) zero(RG_Δ[6]) one(RG_Δ[6])-averaged_rep(m6_stabs[3], RG_Δ[6]) zero(RG_Δ[6]);
+    zero(RG_Δ[6]) zero(RG_Δ[6]) zero(RG_Δ[6]) one(RG_Δ[6])-averaged_rep(m6_stabs[4], RG_Δ[6])
 ]
 dim7_stab_part = [
-    one(RG_Δ[7])-averaged_rep(m7_stabs[1], half_basis_Δ[7], RG_Δ[7]) zero(RG_Δ[7]);
-    zero(RG_Δ[7]) one(RG_Δ[7])-averaged_rep(m7_stabs[2], half_basis_Δ[7], RG_Δ[7])
+    one(RG_Δ[7])-averaged_rep(m7_stabs[1], RG_Δ[7]) zero(RG_Δ[7]);
+    zero(RG_Δ[7]) one(RG_Δ[7])-averaged_rep(m7_stabs[2], RG_Δ[7])
 ];
 
 # Compute the Laplacians (can take about 30mins).

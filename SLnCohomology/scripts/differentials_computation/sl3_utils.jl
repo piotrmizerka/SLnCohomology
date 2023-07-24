@@ -1,6 +1,6 @@
 using Pkg
 # Pkg.activate(normpath(joinpath(@__DIR__, "./")))
-Pkg.activate("/home/mizerka/Desktop/LowCohomologySOS") # you need to change this path for the path of LowCohomologySOS at your computer
+Pkg.activate("/Users/piotrmizerka/Desktop/postdoc_warsaw/code/LowCohomologySOS") # you need to change this path for the path of LowCohomologySOS at your computer
 using LinearAlgebra
 ENV["JULIA_NUM_THREADS"] = Sys.CPU_THREADS÷2
 LinearAlgebra.BLAS.set_num_threads(Sys.CPU_THREADS÷2)
@@ -450,31 +450,31 @@ d56_coset_coeffs = [
 ]
 
 # Compute the stabilisers as subgroups of SL(3,Z)
-m2_stab = [(gelt_from_matrix(M),σ) for (M,σ) in m2_arrays_coeffs]
-m31_stab = [(gelt_from_matrix(M),σ) for (M,σ) in m31_arrays_coeffs]
-m32_stab = [(gelt_from_matrix(M),σ) for (M,σ) in m32_arrays_coeffs]
-m4_stab = [(gelt_from_matrix(M),σ) for (M,σ) in m4_arrays_coeffs]
-m5_stab = [(gelt_from_matrix(M),σ) for (M,σ) in m5_arrays_coeffs]
+m2_stab = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in m2_arrays_coeffs]
+m31_stab = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in m31_arrays_coeffs]
+m32_stab = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in m32_arrays_coeffs]
+m4_stab = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in m4_arrays_coeffs]
+m5_stab = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in m5_arrays_coeffs]
 
 # Store cosets describing the differentials as subsets of G = SL(3,Z)
-d311_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d311_coset_coeffs]
-d312_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d312_coset_coeffs]
-d313_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d313_coset_coeffs]
-d321_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d321_coset_coeffs]
-d322_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d322_coset_coeffs]
-d323_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d323_coset_coeffs]
-d324_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d324_coset_coeffs]
-d411_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d411_coset_coeffs]
-d412_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d412_coset_coeffs]
-d413_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d413_coset_coeffs]
-d414_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d414_coset_coeffs]
-d42_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d42_coset_coeffs]
-d51_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d51_coset_coeffs]
-d52_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d52_coset_coeffs]
-d53_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d53_coset_coeffs]
-d54_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d54_coset_coeffs]
-d55_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d55_coset_coeffs]
-d56_coset = [(gelt_from_matrix(M),σ) for (M,σ) in d56_coset_coeffs]
+d311_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d311_coset_coeffs]
+d312_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d312_coset_coeffs]
+d313_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d313_coset_coeffs]
+d321_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d321_coset_coeffs]
+d322_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d322_coset_coeffs]
+d323_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d323_coset_coeffs]
+d324_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d324_coset_coeffs]
+d411_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d411_coset_coeffs]
+d412_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d412_coset_coeffs]
+d413_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d413_coset_coeffs]
+d414_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d414_coset_coeffs]
+d42_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d42_coset_coeffs]
+d51_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d51_coset_coeffs]
+d52_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d52_coset_coeffs]
+d53_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d53_coset_coeffs]
+d54_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d54_coset_coeffs]
+d55_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d55_coset_coeffs]
+d56_coset = [(gelt_from_matrix(M,sl3),σ) for (M,σ) in d56_coset_coeffs]
 
 # Compute the support (i.e. half_basis) for the group ring over which we'll try to find a spectral gap.
 # half_basis is quite minimalistic - we just add to half_basis the coset elements appearing in the differentials.

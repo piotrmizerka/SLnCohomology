@@ -7,13 +7,13 @@ include("sl3_utils.jl");
 
 # The stabiliser parts which we have to add to get free modules.
 # Hopefully (and quite suprisingly for me) the stabilisers' elements belong to half_basis.
-dim2_stab_part = reshape([one(RG)-averaged_rep(m2_stab, half_basis, RG)], 1, 1)
+dim2_stab_part = reshape([one(RG)-averaged_rep(m2_stab, RG)], 1, 1)
 dim3_stab_part = [
-    one(RG)-averaged_rep(m31_stab, half_basis, RG) zero(RG);
-    zero(RG) one(RG)-averaged_rep(m32_stab, half_basis, RG)
+    one(RG)-averaged_rep(m31_stab, RG) zero(RG);
+    zero(RG) one(RG)-averaged_rep(m32_stab, RG)
 ]
-dim4_stab_part = reshape([one(RG)-averaged_rep(m4_stab, half_basis, RG)], 1, 1)
-dim5_stab_part = reshape([one(RG)-averaged_rep(m5_stab, half_basis, RG)], 1, 1);
+dim4_stab_part = reshape([one(RG)-averaged_rep(m4_stab, RG)], 1, 1)
+dim5_stab_part = reshape([one(RG)-averaged_rep(m5_stab, RG)], 1, 1);
 
 # Compute the Laplacians.
 Δ₂ = d₃*d₃'+dim2_stab_part

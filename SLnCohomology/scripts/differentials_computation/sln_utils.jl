@@ -28,8 +28,8 @@ end
 
 # Compute the supports (i.e. half_bases) for the group rings to compute the Laplacians
 # - we just add to half_basis the coset elements appearing in the differentials.
-d_union = Dict(k=>[one(sln)] for k in differential_degrees)
-for k in differential_degrees
+d_union = Dict(k=>[one(sln)] for k in differential_degrees[2:end])
+for k in differential_degrees[2:end]
     for i in eachindex(sln_bound_stab["boundaries"][k])
         for j in eachindex(sln_bound_stab["boundaries"][k][i])
             coset = sln_bound_stab["boundaries"][k][i][j]["orbit_coset_with_orientation"]

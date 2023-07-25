@@ -1,19 +1,20 @@
-using Pkg
-Pkg.activate(normpath(joinpath(@__DIR__, "../../")))
-
 using Groups
-using LowCohomologySOS
 using LinearAlgebra
+using LowCohomologySOS
+using Pkg
 using Serialization
 using SLnCohomology
+
+Pkg.activate(normpath(joinpath(@__DIR__, "../../")))
+ENV["JULIA_NUM_THREADS"] = Sys.CPU_THREADS÷2
+LinearAlgebra.BLAS.set_num_threads(Sys.CPU_THREADS÷2)
 
 const N = 3 # hard-coded, to change if one wants other slns
 sln = MatrixGroups.SpecialLinearGroup{N}(Int8)
 sln_gens = gens(sln)
 
-# Load the data from Ben. As for now, hard-coded - if different sln is to be loaded,
-# change the path to the appropriate "./precomputed_boundaries/sln_bound_stab.sjl" file
-sln_bound_stab = deserialize(joinpath(@__DIR__, "./precomputed_boundaries/sl3_bound_stab.sjl"))
+# Load the data from Ben
+sln_bound_stab = deserialize(joinpath(@__DIR__, "./precomputed_boundaries/sl"*string(N)*"_bound_stab.sjl"))
 
 # Extract homology degrees
 differential_degrees = sort([first(x) for x in sln_bound_stab["boundaries"]])

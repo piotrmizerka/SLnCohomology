@@ -47,20 +47,22 @@ for pair in consecutive_differential_degrees
     Δ[n] = LowCohomologySOS.embed.(identity, Δ[n], Ref(RG_Δ_star[n]))
 end
 if homology_degrees[1] == differential_degrees[1]
-    n = homology_degrees[1]
-    d_n_plus_1 = LowCohomologySOS.embed.(identity, d[n+1], Ref(RG_Δ[n]))
-    Δ[n] = d_n_plus_1*d_n_plus_1'+stab_part_dim[n]
+    nx = homology_degrees[1]
+    d_nx_plus_1 = LowCohomologySOS.embed.(identity, d[nx+1], Ref(RG_Δ[nx]))
+    Δ[nx] = d_nx_plus_1*d_nx_plus_1'+stab_part_dim[nx]
 end
 if homology_degrees[end] == differential_degrees[end]-1
-    n = differential_degrees[end]
-    d_n = LowCohomologySOS.embed.(identity, d[n], Ref(RG_Δ[n-1]))
-    k_n = cells_number[n]
-    stab_part_dim[n] = [
-        i == j ? one(RG_Δ[n-1])-SLnCohomology.averaged_rep(m_stabs[n][i],RG_Δ[n-1]) : zero(zero(RG_Δ[n-1])) 
-        for i in 1:k_n,j in 1:k_n
+    nx = differential_degrees[end]
+    d_nx = LowCohomologySOS.embed.(identity, d[nx], Ref(RG_Δ[nx-1]))
+    k_nx = cells_number[nx]
+    stab_part_dim[nx] = [
+        i == j ? one(RG_Δ[nx-1])-SLnCohomology.averaged_rep(
+            m_stabs[nx][i],RG_Δ[nx-1]) : zero(zero(RG_Δ[nx-1])
+            ) 
+        for i in 1:k_nx,j in 1:k_nx
     ]
-    Δ[n] = d_n'*d_n+stab_part_dim[n]
-    push!(homology_degrees,n)
+    Δ[nx] = d_nx'*d_nx+stab_part_dim[nx]
+    push!(homology_degrees,nx)
 end
 
 # A sanity check: check if the Laplacians are hermitian.

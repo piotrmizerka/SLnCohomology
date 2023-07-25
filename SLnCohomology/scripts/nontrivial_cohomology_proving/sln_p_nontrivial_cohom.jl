@@ -1,5 +1,4 @@
-# include("../differentials_computation/sl3_laplacians.jl");
-include("../differentials_computation/sl4_laplacians.jl");
+include("../differentials_computation/sln_laplacians.jl");
 
 using Pkg
 Pkg.activate(normpath(joinpath(@__DIR__, "../")))
@@ -13,7 +12,6 @@ using JSON
 using GAP
 
 const p = 2
-const N = 4
 
 function slnp_order(n,p)
     result = 1
@@ -28,7 +26,7 @@ end
 # which assigns a given matrix from SL(N,p) a permutation matrix. #############################################################################
 
 # Before running the code below, requires running the script "permutation_matrices.g" in gap which saves the elements of SL(N,p) 
-# as matrices in a separate file "./sln_p_matrices.txt" via GAP script "permutation_matrices.g".
+# as matrices in a separate file "./sln_p_matrices.txt".
 # One has to do this from the command line and also one has to change the parameters N and p in "permutation_matrices.g"
 # manually (sorry for the hard-coding :)). The following commands do this (run the terminal in the same directory as this julia file):
 # gap

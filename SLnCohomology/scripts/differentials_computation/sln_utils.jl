@@ -12,8 +12,8 @@ sln = MatrixGroups.SpecialLinearGroup{N}(Int8)
 sln_gens = gens(sln)
 
 # Load the data from Ben. As for now, hard-coded - if different sln is to be loaded,
-# change the path to the appropriate "./sln_bound_stab.sjl" file
-sln_bound_stab = deserialize(joinpath(@__DIR__, "./sl3_bound_stab.sjl"))
+# change the path to the appropriate "./precomputed_boundaries/sln_bound_stab.sjl" file
+sln_bound_stab = deserialize(joinpath(@__DIR__, "./precomputed_boundaries/sl3_bound_stab.sjl"))
 
 # Extract homology degrees
 differential_degrees = sort([first(x) for x in sln_bound_stab["boundaries"]])

@@ -1,13 +1,13 @@
-using Groups
-using LinearAlgebra
-using LowCohomologySOS
 using Pkg
-using Serialization
-using SLnCohomology
-
 Pkg.activate(normpath(joinpath(@__DIR__, "../../")))
+using LinearAlgebra
 ENV["JULIA_NUM_THREADS"] = Sys.CPU_THREADS÷2
 LinearAlgebra.BLAS.set_num_threads(Sys.CPU_THREADS÷2)
+
+using Groups
+using LowCohomologySOS
+using Serialization
+using SLnCohomology
 
 sln = MatrixGroups.SpecialLinearGroup{N}(Int8) # N has to be defined before including this file
 sln_gens = gens(sln)

@@ -1,10 +1,12 @@
+# These parameters (hard-coded) are subject to appropriate change.
+const N = 3
+const p = 3
+
 include("../differentials_computation/sln_laplacians.jl");
 
 using Permutations
 using JSON
 using GAP
-
-const p = 3
 
 # Compute a permutation representation for SL(N,p) and store it as a dictionary "permutation_matrices"
 # which assigns a given matrix from SL(N,p) a permutation matrix. #############################################################################
@@ -110,6 +112,7 @@ function representing_matrix(ξ,p::Integer)
     return result
 end
 
+# TODO: move this function to tests
 function representing_matrix_trivial(ξ,p::Integer)
     result = zero(typeof(first(ξ.coeffs)))
     RG = parent(ξ)

@@ -20,7 +20,8 @@ using GAP
 # Note that some tiny cleaning-up of "./slN_p_matrices.txt" may be needed so that it contains no words like "gap" or symbols ">", etc.
 # I did this manually - these lines appeared only at the beginning and at the end apparently.
 
-# REMARK: I pushed the data for SL(3,3) to the online repo, so there is no need to do that for that case. 
+# REMARK: I pushed the data for SL(3,3), SL(4,2), and SL(5,2) to the online repo, 
+# so there is no need to do that for these cases. 
 
 # Compute permutations for each matrix from SL(N,p) with GAP (we use a Julia wrapper for GAP)
 GAP.evalstr("G := SL("*string(N)*","*string(p)*");;")

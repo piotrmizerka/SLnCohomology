@@ -66,6 +66,6 @@ if homology_degrees[end] == differential_degrees[end]-1
 end
 
 # A sanity check: check if the Laplacians are hermitian.
-for n in homology_degrees
-    @assert Δ[n]' == Δ[n]
+for entry in Δ
+    @assert entry[2]' == entry[2]
 end

@@ -1,6 +1,6 @@
 # These parameters (hard-coded) are subject to appropriate change.
-const N = 3
-const p = 3
+const N = 5
+const p = 2
 
 include("../differentials_computation/sln_laplacians.jl");
 
@@ -43,7 +43,7 @@ for perm in permutations
     for cycle in perm
         if length(cycle) > 0
             if deg < maximum(cycle)
-                deg = maximum(cycle)
+                global deg = maximum(cycle)
             end
         end
     end
@@ -68,7 +68,8 @@ function standarize_permutation(perm, deg)
     return result
 end
 
-file_path = "./scripts/nontrivial_cohomology_proving/sl"*string(N)*"_"*string(p)*"_matrices.txt"
+dir_path = "/home/mizerka/Desktop/HigherTSL3/SLnCohomology"
+file_path = dir_path*"/scripts/nontrivial_cohomology_proving/sl"*string(N)*"_"*string(p)*"_matrices.txt"
 file = open(file_path, "r")
 i = 0
 current_matrix = Int8.(zeros(N,N))
@@ -77,15 +78,15 @@ for line in eachline(file)
     linex = replace(line, r"\s+" => "")
     linexx = replace(linex, r"\." => "0")
     for j in eachindex(linexx)
-        current_matrix[i%N+1,j] = parse(Int8,linexx[j])
+        global current_matrix[i%N+1,j] = parse(Int8,linexx[j])
     end
     if i%N == N-1
         proper_perm = standarize_permutation(permutations[div(i,N)+1], deg)
         proper_perm_2 = [x for x in proper_perm]
         permutation_matrices[current_matrix] = Matrix(Permutation(proper_perm_2))
-        current_matrix = Int8.(zeros(N,N))
+        global current_matrix = Int8.(zeros(N,N))
     end
-    i += 1
+    global i += 1
 end
 close(file)
 #######################################################################################################################################
@@ -126,7 +127,8 @@ end
 # Compute π(Δₙ) for π, the representation given by permutation representation of SL(n,p)
 # and n varying through homology degrees.
 πΔ = Dict()
-for n in homology_degrees
+for entry in Δ
+    n = entry[1]
     πΔ[n] = vcat(
         [
             hcat([representing_matrix(Δ[n][i,j],p) for j in 1:size(Δ[n])[2]]...) 
@@ -136,24 +138,25 @@ for n in homology_degrees
 end
 
 # For SL(3,Z), modular projection with p = 3 ##############################################################################
-for n in reverse(homology_degrees)
+for entry in Δ
+    n = entry[1]
     @info "rank H^"*string(differential_degrees[end]-n)*" = "*string(size(πΔ[n])[1]-rank(πΔ[n]))
 end
 
-# TODO: move all sanity checks to tests!
-# A sanity check - since H¹(SL(3,Z),π) = 0, we shall get the full rank for the perm repr of Δ₄:
-@assert πΔ[4]' == πΔ[4]
-@assert size(πΔ[4])[1]-rank(πΔ[4]) == 0
+# # TODO: move all sanity checks to tests!
+# # A sanity check - since H¹(SL(3,Z),π) = 0, we shall get the full rank for the perm repr of Δ₄:
+# @assert πΔ[4]' == πΔ[4]
+# @assert size(πΔ[4])[1]-rank(πΔ[4]) == 0
 
-# A sanity check: since the permutation representation has a nontrivial fixed pont set, 
-# we shall get nontrivial zero cohomology for this representation.
-@assert πΔ[5]' == πΔ[5]
-size(πΔ[5])[1]-rank(πΔ[5]) # non-full rank - means nontrivial 0-cohomology
+# # A sanity check: since the permutation representation has a nontrivial fixed pont set, 
+# # we shall get nontrivial zero cohomology for this representation.
+# @assert πΔ[5]' == πΔ[5]
+# size(πΔ[5])[1]-rank(πΔ[5]) # non-full rank - means nontrivial 0-cohomology
 
-# H² - we get nontrivial cohomology!
-@assert πΔ[3]' == πΔ[3]
-size(πΔ[3])[1]-rank(πΔ[3]) # non-full rank - means nontrivial 2-cohomology
+# # H² - we get nontrivial cohomology!
+# @assert πΔ[3]' == πΔ[3]
+# size(πΔ[3])[1]-rank(πΔ[3]) # non-full rank - means nontrivial 2-cohomology
 
-@assert πΔ[2]' == πΔ[2]
-size(πΔ[2])[1]-rank(πΔ[2])
-##########################################################################################
+# @assert πΔ[2]' == πΔ[2]
+# size(πΔ[2])[1]-rank(πΔ[2])
+# ##########################################################################################

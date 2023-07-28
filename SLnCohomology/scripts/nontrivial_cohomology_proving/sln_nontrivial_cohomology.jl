@@ -1,12 +1,13 @@
 # These parameters (hard-coded) are subject to appropriate change.
-const N = 5
-const p = 2
+const N = 3
+const p = 3
 
 include("../differentials_computation/sln_laplacians.jl");
 
 using Permutations
 using JSON
 using GAP
+using SparseArrays
 
 # Compute a permutation representation for SL(N,p) and store it as a dictionary "permutation_matrices"
 # which assigns a given matrix from SL(N,p) a permutation matrix. #############################################################################
@@ -68,7 +69,8 @@ function standarize_permutation(perm, deg)
     return result
 end
 
-dir_path = "/home/mizerka/Desktop/HigherTSL3/SLnCohomology"
+# dir_path = "/home/mizerka/Desktop/HigherTSL3/SLnCohomology"
+dir_path = "/Users/piotrmizerka/Desktop/postdoc_warsaw/articles/HigherTSL3/SLnCohomology/"
 file_path = dir_path*"/scripts/nontrivial_cohomology_proving/sl"*string(N)*"_"*string(p)*"_matrices.txt"
 file = open(file_path, "r")
 i = 0
@@ -107,7 +109,8 @@ end
 function representing_matrix(ξ,p::Integer)
     result = typeof(first(ξ.coeffs)).(zeros(deg,deg))
     RG = parent(ξ)
-    for x in RG.basis
+    for i in SparseArrays.nonzeroinds(ξ.coeffs)
+        x = RG.basis[i]
         proj = projection(MatrixGroups.matrix_repr(x),p)
         result += ξ(x)*permutation_matrices[proj]
     end

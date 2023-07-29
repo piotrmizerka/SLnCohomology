@@ -1,3 +1,5 @@
+# TODO: rewrite this script as test!
+
 include("../../src/permutation_matrices.jl")
 
 using LinearAlgebra
@@ -12,7 +14,6 @@ slnp_dict, matrices_fixed_order = slnp(N,p)
 perm_mats = SLnCohomology.permutation_matrices(matrices_fixed_order, slnp_dict, p)
 
 # For SL(3,Z), modular projection with p = 3 ##############################################################################
-include("../differentials_computation/sl3_laplacians.jl");
 @info "SL(3,Z) via SL(3,3):"
 # A sanity check - since H^1(SL(3,Z),π) = 0, we shall get the full rank for the perm repr of Δ₄:
 delta_4_perm = Array(SLnCohomology.representing_matrix(Δ₄[1,1],p,perm_mats))

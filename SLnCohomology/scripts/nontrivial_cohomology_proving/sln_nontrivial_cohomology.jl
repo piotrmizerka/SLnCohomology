@@ -69,9 +69,9 @@ function standarize_permutation(perm, deg)
     return result
 end
 
-# dir_path = "/home/mizerka/Desktop/HigherTSL3/SLnCohomology"
+# dir_path = "/home/mizerka/Desktop/HigherTSL3/SLnCohomology" # need to be changed accordingly!
 dir_path = "/Users/piotrmizerka/Desktop/postdoc_warsaw/articles/HigherTSL3/SLnCohomology/"
-file_path = dir_path*"/scripts/nontrivial_cohomology_proving/sl"*string(N)*"_"*string(p)*"_matrices.txt"
+file_path = dir_path*"/scripts/nontrivial_cohomology_proving/sln_p_matrices/sl"*string(N)*"_"*string(p)*"_matrices.txt"
 file = open(file_path, "r")
 i = 0
 current_matrix = Int8.(zeros(N,N))

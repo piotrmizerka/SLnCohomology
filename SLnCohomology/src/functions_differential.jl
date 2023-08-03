@@ -156,18 +156,6 @@ function same_values((form1, min_vectors1),(form2, min_vectors2))
     return min_values1 == min_values2
 end
 
-
-function orbit_in_list(matrix,list)
-    #= Checks whether matrix lies in the SL_n orbit of one of the elements in list
-    =#
-    for matrix2 in list
-        if same_orbit(matrix,matrix2)
-            return true
-        end
-    end
-    return false
-end
-
 function cell_in_interior(matrix)
     #= check whether the matrix determines a cell in the interior of the symmetric space
     =#

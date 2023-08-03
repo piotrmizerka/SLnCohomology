@@ -12,10 +12,6 @@ using SLnCohomology
 
 deserialize(joinpath(@__DIR__, "./precomputed_cells/sl"*string(N)*"_cells.sjl"))
 
-# as 5 is odd, we don't need to distinguish between SL5 and Gl5 orbits
-# maybe dependent on n later on
-cells_SL5 = cells_GL5
-
 oriented_cells_SL5 = Dict()
 for dimension in range(4,14)
     oriented_cells_SL5[dimension] = []

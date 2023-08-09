@@ -1,6 +1,7 @@
 # Compute the cell structure for SL_3, SL_4, SL_5. At the moment, this is actually just the data from Dana Yasaki. Maybe redo on our own at some point.
-# It's done very ad hoc at the moment, because might need to be changed again anyway
+# It's done very ad hoc at the moment, because it might need to be changed again anyway
 # Also important: The 9-dimensional cell for GL_4 is currently missing.
+
 
 using Pkg
 Pkg.activate(normpath(joinpath(@__DIR__, "../../")))

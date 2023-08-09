@@ -4,6 +4,8 @@ using PermutationGroups
 using SLnCohomology
 using SparseArrays
 using Test
+using Serialization
+using Multisets
 
 function cyclic_group(n::Integer)
     A = Alphabet([:a, :A], [2, 1])
@@ -15,4 +17,5 @@ end
 @testset "SLnCohomology" begin
     include("helpful_functions_tests.jl")
     include("permutation_matrices_tests.jl")
+    include("boundary_tests.jl")
 end

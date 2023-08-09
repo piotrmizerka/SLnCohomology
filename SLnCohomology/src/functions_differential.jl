@@ -1,7 +1,6 @@
 using LinearAlgebra
 using Combinatorics
 using Serialization
-include("Plesken_Souvignier.jl");
 
 function quadratic_form(matrix)
     form = matrix*transpose(matrix)
@@ -139,95 +138,54 @@ function boundaries_in_group_ring_with_orientation(cell,basis,cell_dimension,cel
     return boundary_cells
 end
 
+# Creating dictionaries for the computation of the chain complexes:
 
-# Stuff that's currently not used:
-
-# pre-check used for speed up by Elbaz et al. 
-# Probably won't help much here as there are so few forms and they are almost determined by their determinant.
-# Not in use at the moment.
-function same_values((form1, min_vectors1),(form2, min_vectors2))
-    min_values1 = Set()
-    for vector in eachcol(min_vectors1)
-        push!(min_values1,transpose(vector)*form1*vector)
-    end
-    min_values2 = Set()
-    for vector in eachcol(min_vectors2)
-        push!(min_values2,transpose(vector)*form2*vector)
-    end
-    return min_values1 == min_values2
-end
-
-
-function orbit_in_list(matrix,list)
-    #= Checks whether matrix lies in the SL_n orbit of one of the elements in list
-    =#
-    for matrix2 in list
-        if same_orbit(matrix,matrix2)
-            return true
-        end
-    end
-    return false
-end
-
-function cell_in_interior(matrix)
-    #= check whether the matrix determines a cell in the interior of the symmetric space
-    =#
-    if length(bases_in_integer_lattices(matrix))>0
-        return true
-    else
-        return false
-    end
-end
-
-function signed_matrices(dimension)
-    # Returns all diagonal square "sign matrices" in dimension
-    signs_list = []
-    for set in powerset(1:dimension)
-        matrix = zeros(Int8,dimension,dimension)
-        for i in 1:dimension
-            if i in set
-                matrix[(i-1)*dimension+(i)] = -1
-            else
-                matrix[(i-1)*dimension+(i)] = 1
+function oriented_cells_dict(cells_sln)
+    oriented_cells_sln = Dict()
+    for dimension in keys(cells_sln)
+        oriented_cells_sln[dimension] = []
+        for cell in cells_sln[dimension]
+            forms_cell = []
+            #first convert into vectors (could be combined with below, but easier like this for now)
+            for minimal_vector in eachcol(cell)
+                push!(forms_cell, vec(quadratic_form(minimal_vector)))
             end
+            basis = extract_basis(forms_cell)
+            push!(oriented_cells_sln[dimension],(cell,basis))
         end
-        push!(signs_list,matrix)
-    end    
-    return signs_list
+    end
+    return oriented_cells_sln   
 end
 
-function bases_in_integer_lattices(matrix)
-    #= matrix an integer matrix whose columns form a basis of the lattice
-    returns all sets of bases, with all possible sign combinations 
-    =#
-    bases = []
-    columns = collect(eachcol(matrix)) # set of all columns
-    dimension = length(columns[1])
-    sign_changes = signed_matrices(dimension)
-    for candidate in Combinatorics.permutations(columns,dimension) # all subsets of columns of with dimension-many elements
-        matrix_candidate = transpose(reduce(vcat,transpose.(candidate)))
-        if (round(det(matrix_candidate)) == 1) || (round(det(matrix_candidate)) == -1)
-            #if that's the case, candidate is a basis of Z^dimension
-            for sign in sign_changes
-                # each basis element can be multiplied by +-1. Add all combinations
-                push!(bases, matrix_candidate*sign)
+function stabilisers_dict(oriented_cells_sln)
+    stabilisers_sln = Dict()
+    for dimension in keys(oriented_cells_sln)
+        println("Dimension $dimension")
+        cell_list = oriented_cells_sln[dimension]
+        stabilisers_this_dimension = []
+        cell_count = 0
+        for (cell,basis) in cell_list
+            cell_count += 1
+            println("Cell number $cell_count")
+            cell_stabiliser = []
+            for (g,orientation) in stabiliser_coset_with_orientation((cell,basis), (cell,basis))
+                push!(cell_stabiliser,(g,orientation))
             end
+            push!(stabilisers_this_dimension,cell_stabiliser)
         end
+        stabilisers_sln[dimension] = stabilisers_this_dimension
     end
-    return bases
+    return stabilisers_sln
 end
 
-function a_basis_in_integer_lattices(matrix)
-    #= matrix an integer matrix whose columns form a basis of the lattice
-    returns one basis
-    =#
-    columns = collect(eachcol(matrix)) # set of all columns
-    dimension = length(columns[1])
-    for candidate in Combinatorics.permutations(columns,dimension) # all subsets of columns of with dimension-many elements
-        matrix_candidate = transpose(reduce(vcat,transpose.(candidate)))
-        if (round(det(matrix_candidate)) == 1) || (round(det(matrix_candidate)) == -1)
-            #if that's the case, candidate is a basis of Z^dimension
-            return matrix_candidate
+function boundaries_dict(oriented_cells_sln)
+    boundaries_sln = Dict()
+    for (dimension, cell_list) in oriented_cells_sln
+        boundaries_this_dimension = []
+        for (cell,basis) in cell_list
+            push!(boundaries_this_dimension,boundaries_in_group_ring_with_orientation(cell,basis,dimension,oriented_cells_sln))
         end
+        boundaries_sln[dimension] = boundaries_this_dimension
     end
+    return boundaries_sln
 end

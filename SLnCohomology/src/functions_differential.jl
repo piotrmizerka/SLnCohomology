@@ -138,6 +138,57 @@ function boundaries_in_group_ring_with_orientation(cell,basis,cell_dimension,cel
     return boundary_cells
 end
 
+# Creating dictionaries for the computation of the chain complexes:
+
+function oriented_cells_dict(cells_sln)
+    oriented_cells_sln = Dict()
+    for dimension in keys(cells_sln)
+        oriented_cells_sln[dimension] = []
+        for cell in cells_sln[dimension]
+            forms_cell = []
+            #first convert into vectors (could be combined with below, but easier like this for now)
+            for minimal_vector in eachcol(cell)
+                push!(forms_cell, vec(quadratic_form(minimal_vector)))
+            end
+            basis = extract_basis(forms_cell)
+            push!(oriented_cells_sln[dimension],(cell,basis))
+        end
+    end
+    return oriented_cells_sln   
+end
+
+function stabilisers_dict(oriented_cells_sln)
+    stabilisers_sln = Dict()
+    for dimension in keys(oriented_cells_sln)
+        println("Dimension $dimension")
+        cell_list = oriented_cells_sln[dimension]
+        stabilisers_this_dimension = []
+        cell_count = 0
+        for (cell,basis) in cell_list
+            cell_count += 1
+            println("Cell number $cell_count")
+            cell_stabiliser = []
+            for (g,orientation) in stabiliser_coset_with_orientation((cell,basis), (cell,basis))
+                push!(cell_stabiliser,(g,orientation))
+            end
+            push!(stabilisers_this_dimension,cell_stabiliser)
+        end
+        stabilisers_sln[dimension] = stabilisers_this_dimension
+    end
+    return stabilisers_sln
+end
+
+function boundaries_dict(oriented_cells_sln)
+    boundaries_sln = Dict()
+    for (dimension, cell_list) in oriented_cells_sln
+        boundaries_this_dimension = []
+        for (cell,basis) in cell_list
+            push!(boundaries_this_dimension,boundaries_in_group_ring_with_orientation(cell,basis,dimension,oriented_cells_sln))
+        end
+        boundaries_sln[dimension] = boundaries_this_dimension
+    end
+    return boundaries_sln
+end
 
 # Stuff that's currently not used:
 

@@ -6,7 +6,7 @@ function test_boundary_data(N)
     stabiliser_new = SLnCohomology.stabilisers_dict(oriented_cells_sln) # compute the stabilisers
     boundaries_new  = SLnCohomology.boundaries_dict(oriented_cells_sln) # compute the boundaries
 
-    sln_data_old = deserialize(joinpath(@__DIR__, "../scripts/differentials_computation/precomputed_boundaries/sl"*string(N)*"_bound_stab_old.sjl"))
+    sln_data_old = deserialize(joinpath(@__DIR__, "./old_data/sl"*string(N)*"_bound_stab_old.sjl"))
     stabiliser_old = sln_data_old["stabilisers"]
     boundaries_old = sln_data_old["boundaries"]
     for dimension in keys(stabiliser_new)

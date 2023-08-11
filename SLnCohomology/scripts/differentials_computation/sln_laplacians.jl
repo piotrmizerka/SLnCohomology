@@ -1,3 +1,7 @@
+# This parameter (hard-coded) is subject to appropriate change.
+# Comment out if not calculating precomputed Laplacians only.
+const N = 4
+
 # Let's load the precompuded differential data (can take about 24hours ???)
 include("sln_utils.jl");
 
@@ -69,3 +73,8 @@ end
 for entry in Δ
     @assert entry[2]' == entry[2]
 end
+
+laplacian_data = Dict()
+laplacian_data["laplacians"] = Δ
+laplacian_data["differential_degrees"] = differential_degrees
+serialize(joinpath(@__DIR__, "./precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"), laplacian_data)

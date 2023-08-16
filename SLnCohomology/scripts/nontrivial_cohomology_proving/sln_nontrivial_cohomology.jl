@@ -1,9 +1,19 @@
 # These parameters (hard-coded) are subject to appropriate change.
-const N = 3
-const p = 3
+const N = 4
+const p = 2
 
 # include("../differentials_computation/sln_laplacians.jl");
-# Instead, load from precomputed Laplacian data:
+# Instead, load from precomputed Laplacian data: ##########################
+using Pkg
+Pkg.activate(normpath(joinpath(@__DIR__, "../../")))
+using LinearAlgebra
+ENV["JULIA_NUM_THREADS"] = Sys.CPU_THREADS÷2
+LinearAlgebra.BLAS.set_num_threads(Sys.CPU_THREADS÷2)
+
+using Groups
+using LowCohomologySOS
+using Serialization
+using SLnCohomology
 sln_laplacian_data = deserialize(joinpath(@__DIR__, "../differentials_computation/precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"))
 Δ = sln_laplacian_data["laplacians"]
 differential_degrees = sln_laplacian_data["differential_degrees"]

@@ -144,7 +144,9 @@ end
 
 # Compute π(Δₙ) for π, the representation given by permutation representation of SL(n,p)
 # and n varying through homology degrees.
-if N == 4 # don't consider 1st cohomology for SL(4,Z) since the cells were not simplicial!
+if N == 4 # don't consider 1st cohomology for SL(4,Z) since one of the cells was not simplicial
+    # and the orientations were not included for this cell, I guess!
+    #  (see the e-mail from Benjamin to all from 2023.03.16)
     delete!(Δ,8)
 end
 πΔ = Dict()

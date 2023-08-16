@@ -14,9 +14,10 @@ using Groups
 using LowCohomologySOS
 using Serialization
 using SLnCohomology
+
 sln_laplacian_data = deserialize(joinpath(@__DIR__, "../differentials_computation/precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"))
 Δ = sln_laplacian_data["laplacians"]
-differential_degrees = sln_laplacian_data["differential_degrees"]
+##########################################################################
 
 using Permutations
 using JSON
@@ -143,6 +144,9 @@ end
 
 # Compute π(Δₙ) for π, the representation given by permutation representation of SL(n,p)
 # and n varying through homology degrees.
+if N == 4 # don't consider 1st cohomology for SL(4,Z) since the cells were not simplicial!
+    delete!(Δ,8)
+end
 πΔ = Dict()
 for entry in Δ
     n = entry[1]
@@ -154,10 +158,9 @@ for entry in Δ
     )
 end
 
-# For SL(3,Z), modular projection with p = 3 ##############################################################################
 for entry in Δ
     n = entry[1]
-    @info "rank H^"*string(differential_degrees[end]-n)*" = "*string(size(πΔ[n])[1]-rank(πΔ[n]))
+    @info "rank H^"*string(div(N*(N-1),2)+N-n-1)*" = "*string(size(πΔ[n])[1]-rank(πΔ[n]))
 end
 
 # # TODO: move all sanity checks to tests!
@@ -176,4 +179,3 @@ end
 
 # @assert πΔ[2]' == πΔ[2]
 # size(πΔ[2])[1]-rank(πΔ[2])
-# ##########################################################################################

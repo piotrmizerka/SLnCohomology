@@ -1,8 +1,23 @@
 # These parameters (hard-coded) are subject to appropriate change.
-const N = 3
-const p = 3
+const N = 4
+const p = 2
 
-include("../differentials_computation/sln_laplacians.jl");
+# include("../differentials_computation/sln_laplacians.jl");
+# Instead, load from precomputed Laplacian data: ##########################
+using Pkg
+Pkg.activate(normpath(joinpath(@__DIR__, "../../")))
+using LinearAlgebra
+ENV["JULIA_NUM_THREADS"] = Sys.CPU_THREADS÷2
+LinearAlgebra.BLAS.set_num_threads(Sys.CPU_THREADS÷2)
+
+using Groups
+using LowCohomologySOS
+using Serialization
+using SLnCohomology
+
+sln_laplacian_data = deserialize(joinpath(@__DIR__, "../differentials_computation/precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"))
+Δ = sln_laplacian_data["laplacians"]
+##########################################################################
 
 using Permutations
 using JSON
@@ -129,6 +144,11 @@ end
 
 # Compute π(Δₙ) for π, the representation given by permutation representation of SL(n,p)
 # and n varying through homology degrees.
+if N == 4 # don't consider 1st cohomology for SL(4,Z) since one of the cells was not simplicial
+    # and the orientations were not included for this cell, I guess!
+    #  (see the e-mail from Benjamin to all from 2023.03.16)
+    delete!(Δ,8)
+end
 πΔ = Dict()
 for entry in Δ
     n = entry[1]
@@ -140,10 +160,9 @@ for entry in Δ
     )
 end
 
-# For SL(3,Z), modular projection with p = 3 ##############################################################################
 for entry in Δ
     n = entry[1]
-    @info "rank H^"*string(differential_degrees[end]-n)*" = "*string(size(πΔ[n])[1]-rank(πΔ[n]))
+    @info "rank H^"*string(div(N*(N-1),2)+N-n-1)*" = "*string(size(πΔ[n])[1]-rank(πΔ[n]))
 end
 
 # # TODO: move all sanity checks to tests!
@@ -162,4 +181,3 @@ end
 
 # @assert πΔ[2]' == πΔ[2]
 # size(πΔ[2])[1]-rank(πΔ[2])
-# ##########################################################################################

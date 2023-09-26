@@ -1,6 +1,6 @@
 # These parameters (hard-coded) are subject to appropriate change.
-const N = 4
-const p = 2
+const N = 3
+const p = 3
 
 # include("../differentials_computation/sln_laplacians.jl");
 # Instead, load from precomputed Laplacian data: ##########################
@@ -10,19 +10,23 @@ using LinearAlgebra
 ENV["JULIA_NUM_THREADS"] = Sys.CPU_THREADS÷2
 LinearAlgebra.BLAS.set_num_threads(Sys.CPU_THREADS÷2)
 
+using BlockArrays
+using GAP
 using Groups
 using LowCohomologySOS
+using JSON
+using Permutations
 using Serialization
 using SLnCohomology
+using SparseArrays
 
 sln_laplacian_data = deserialize(joinpath(@__DIR__, "../differentials_computation/precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"))
 Δ = sln_laplacian_data["laplacians"]
-##########################################################################
-
-using Permutations
-using JSON
-using GAP
-using SparseArrays
+if N == 4 # don't consider 1st cohomology for SL(4,Z) since one of the cells was not simplicial
+    # and the orientations were not included for this cell, I guess!
+    #  (see the e-mail from Benjamin to all from 2023.03.16)
+    delete!(Δ,8)
+end
 
 # Compute a permutation representation for SL(N,p) and store it as a dictionary "permutation_matrices"
 # which assigns a given matrix from SL(N,p) a permutation matrix. #############################################################################
@@ -106,7 +110,6 @@ for line in eachline(file)
     global i += 1
 end
 close(file)
-#######################################################################################################################################
 
 # Compute projection onto SL(N,p) from a matrix from SL(N,Z)
 function projection(M, p::Integer)
@@ -142,19 +145,12 @@ function representing_matrix_trivial(ξ,p::Integer)
     return result
 end
 
-# Compute π(Δₙ) for π, the representation given by permutation representation of SL(n,p)
-# and n varying through homology degrees.
-if N == 4 # don't consider 1st cohomology for SL(4,Z) since one of the cells was not simplicial
-    # and the orientations were not included for this cell, I guess!
-    #  (see the e-mail from Benjamin to all from 2023.03.16)
-    delete!(Δ,8)
-end
 πΔ = Dict()
 for entry in Δ
     n = entry[1]
     πΔ[n] = vcat(
         [
-            hcat([representing_matrix(Δ[n][i,j],p) for j in 1:size(Δ[n])[2]]...) 
+            hcat([representing_matrix(Δ[n][i,j],p) for j in 1:size(Δ[n])[2]]...)
             for i in 1:size(Δ[n])[1]
         ]...
     )

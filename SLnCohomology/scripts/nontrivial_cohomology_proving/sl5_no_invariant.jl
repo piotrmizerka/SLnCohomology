@@ -1,12 +1,15 @@
-const N = 4
+# TODO: remove reapeated code
+
+const N = 5
 const p = 2
 
-using Pkg
-Pkg.activate(normpath(joinpath(@__DIR__, "../../")))
+# using Pkg
+# Pkg.activate(normpath(joinpath(@__DIR__, "../../")))
 using LinearAlgebra
 ENV["JULIA_NUM_THREADS"] = Sys.CPU_THREADS÷2
 LinearAlgebra.BLAS.set_num_threads(Sys.CPU_THREADS÷2)
 
+using AbstractAlgebra
 using BlockArrays
 using GAP
 using Groups
@@ -17,25 +20,21 @@ using Serialization
 using SLnCohomology
 using SparseArrays
 
-sln_laplacian_data = deserialize(joinpath(@__DIR__, "../differentials_computation/precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"))
+sln_laplacian_data = deserialize(joinpath(@__DIR__, "scripts/differentials_computation/precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"))
 Δ = sln_laplacian_data["laplacians"]
-delete!(Δ,8)
 
-# Compute flip-permutation representation of the subgroup of SL(4,2)
-# isomorphic to SmallGroup(576,8654). Then we'll induce our π from it. #################################################
+# TODO: pay attention if no deletes are necessary due to non-standard differentials
+
+# Compute flip-permutation representation of the subgroup of SL(5,2)
+# isomorphic to Smallgroup(576,8654), embedded as subgroup of SL(4,2) (cannonically embedded in SL(5,2)). 
+# Then we'll induce our π from it. #################################################
 GAP.evalstr("G := SL("*string(N)*","*string(p)*");;")
-GAP.evalstr("conj_cl_sbgps := ConjugacyClassesSubgroups(G);;")
-GAP.evalstr("for cl in conj_cl_sbgps do
-                H := Representative(cl);
-                if Order(H) = 576 then
-                    H_in_G := H;
-                    break;
-                fi;
-            od;")
+GAP.evalstr("conj_cl_sbgps_sl_5_2 := ConjugacyClassesSubgroups(G);;")
+GAP.evalstr("H_in_G := Representative(conj_cl_sbgps_sl_5_2[1407]);;")
 GAP.evalstr("H_list := AsList(H_in_G);;")
 GAP.evalstr("iso := IsomorphismPermGroup(H_in_G);;")
 permutations = []
-for i in 1:576
+for i in 1:64512
     line = string(GAP.evalstr("Image(iso,H_list["*string(i)*"]);"))
     linex = replace(line, r"\(" => ",[")
     linexx = replace(linex, r"\)" => "]")
@@ -76,28 +75,28 @@ function standarize_permutation(perm, deg)
 end
 
 function integer_matrix(i::Integer)
-    n = 4
+    n = 5
     return [GAP.evalstr("Int(H_list["*string(i)*"]["*string(k)*","*string(l)*"]);") for k in 1:n,l in 1:n]
 end
 
 GAP.evalstr("normal_sbgps_H := NormalSubgroups(H_in_G);")
-GAP.evalstr("index_two_H := normal_sbgps_H[4];") # this is this group: https://people.maths.bris.ac.uk/~matyd/GroupNames/288i1/PSO+(4,3).html
+GAP.evalstr("index_two_H := normal_sbgps_H[5];") # this is this group: https://people.maths.bris.ac.uk/~matyd/GroupNames/288i1/PSO+(4,3).html
 flip_permutation_matrices = Dict()
-for i in 1:576
+for i in 1:64512
     proper_perm = standarize_permutation(permutations[i],deg)
     proper_perm_2 = [x for x in proper_perm]
     perm_stand = Permutation(proper_perm_2)
     even_sign = GAP.evalstr("H_list["*string(i)*"] in index_two_H;")
     if !even_sign
-        flip_permutation_matrices[integer_matrix(i)] = -Int.(Matrix(perm_stand)^(-1))
+        flip_permutation_matrices[integer_matrix(i)] = sparse(-Int.(Matrix(perm_stand)^(-1)))
     else
-        flip_permutation_matrices[integer_matrix(i)] = Int.(Matrix(perm_stand)^(-1))
+        flip_permutation_matrices[integer_matrix(i)] = sparse(Int.(Matrix(perm_stand)^(-1)))
     end
 end
 
 sl_n_p_matrices = []
-# dir_path = "/home/mizerka/Desktop/HigherTSL3/SLnCohomology" # need to be changed accordingly!
-dir_path = "/Users/piotrmizerka/Desktop/postdoc_warsaw/articles/HigherTSL3/SLnCohomology/"
+dir_path = "/users/piotrmizerka/HigherTSL3/SLnCohomology/" # need to be changed accordingly!
+# dir_path = "/Users/piotrmizerka/Desktop/postdoc_warsaw/articles/HigherTSL3/SLnCohomology/"
 file_path = dir_path*"/scripts/nontrivial_cohomology_proving/sln_p_matrices/sl"*string(N)*"_"*string(p)*"_matrices.txt"
 file = open(file_path, "r")
 i = 0
@@ -123,14 +122,6 @@ function matrix_mod_p(M,p::Integer)
     end
     return result
 end
-function inverse_elt(g,G,p::Integer)
-    I = [i==j ? 1 : 0 for i in 1:size(g)[1],j in 1:size(g)[2]]
-    for h in G
-        if matrix_mod_p(g*h,p) == I
-            return h
-        end
-    end
-end
 
 cosets = Dict()
 cosets_representatives = []
@@ -139,20 +130,6 @@ for g in sl_n_p_matrices
     considered_matrices[g] = false
 end
 H = collect(keys(flip_permutation_matrices))
-
-# move to tests ##########
-it = 0
-for g in H
-    @info it
-    @assert Matrix(flip_permutation_matrices[g])^(-1) == flip_permutation_matrices[g]' # orthogonality test -- FAILS!!!!!!
-    @assert Matrix(flip_permutation_matrices[g])^(-1) == flip_permutation_matrices[inverse_elt(g,sl_n_p_matrices,p)]
-    for h in H
-        gh = matrix_mod_p(g*h,p)
-        @assert flip_permutation_matrices[g]*flip_permutation_matrices[h] == flip_permutation_matrices[gh]
-    end
-    it += 1
-end
-##########################
 
 # Check if what we have has no invariant vectors:
 function no_inv(M)
@@ -166,7 +143,7 @@ function no_inv(M)
 end
 no_inv_subspace = Set([])
 for h in H
-    no_inv_subspace = union!(no_inv_subspace,no_inv(flip_permutation_matrices[h]))
+    global no_inv_subspace = union!(no_inv_subspace,no_inv(flip_permutation_matrices[h]))
 end
 @assert length(no_inv_subspace) == deg # this means that we have no invariant vectors
 
@@ -187,59 +164,19 @@ end
 
 function induced_H(g)
     block_sizes = [deg for i in 1:length(cosets_representatives)]
-    zero_mat = Int8.(spzeros(deg,deg))
-    result = BlockArray{Int8}(undef_blocks, block_sizes, block_sizes)
-    for i in eachindex(cosets_representatives)
-        for j in eachindex(cosets_representatives)
-            setblock!(result, zero_mat, i,j)
-        end
-    end
+    total_size = deg*length(cosets_representatives)
+    result = BlockArray{Int8}(spzeros(total_size,total_size), block_sizes, block_sizes)
     for i in eachindex(cosets_representatives)
         gi = cosets_representatives[i]
         ggi = matrix_mod_p(g*gi,p)
         gj = cosets[ggi]
         j = cosets_representatives_indices[gj]
-        for h in H
-            if ggi == matrix_mod_p(gj*h,p)
-                setblock!(result, flip_permutation_matrices[h], j,i)
-                break
-            end
-        end
+        gj_inv = inv(AbstractAlgebra.matrix(GF(p),gj))
+        h = Int8.(lift.(gj_inv*AbstractAlgebra.matrix(GF(p),ggi)))
+        setblock!(result, flip_permutation_matrices[h], j,i)
     end
     return result
 end
-
-π = Dict()
-it = 0
-for g in sl_n_p_matrices
-    @info it
-    π[g] = induced_H(g)
-    it += 1
-end
-
-it = 0
-iter_limit = 10
-for g in sl_n_p_matrices
-    @info it
-    @assert Matrix(π[g])^(-1) == π[g]' # orthogonality test -- FAILS!!!!!!
-    @assert Matrix(π[g])^(-1) == π[inverse_elt(g,sl_n_p_matrices,p)]
-    it2 = 0
-    for h in sl_n_p_matrices
-        gh = matrix_mod_p(g*h,p)
-        @info it2
-        @assert π[g]*π[h] == π[gh]
-        if it2 == iter_limit
-            break
-        end
-        it2 +=1 
-    end
-    if it == iter_limit
-        break
-    end
-    it += 1
-end
-#####################################################################
-####################################################################################################
 
 function projection(M, p::Integer)
     result = Int8.(zeros(size(M)[1],size(M)[2]))
@@ -250,6 +187,33 @@ function projection(M, p::Integer)
         end
     end
     return result
+end
+
+support = []
+for entry in Δ
+    n = entry[1]
+    @info n
+    RG = parent(first(Δ[n]))
+    for k in eachindex(Δ[n])
+        for i in SparseArrays.nonzeroinds(Δ[n][k].coeffs)
+            x = RG.basis[i]
+            proj = projection(MatrixGroups.matrix_repr(x),p)
+            push!(support,proj)
+        end
+    end
+end
+support = collect(Set(support))
+
+# Works up to this point. The following loop takes too much time...
+π = Dict()
+it = 0
+for g in support
+    if it == 100
+        @info it, "pi dict"
+    end
+    π[g] = induced_H(g)
+    @info it
+    it += 1
 end
 
 function representing_matrix(ξ,p::Integer) # TODO: don't repeat the code!

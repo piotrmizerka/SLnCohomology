@@ -1,4 +1,4 @@
-N=3 
+#N=5 
 # parameter N needs to be set globally; if just execute this script, uncomment above
 
 using Pkg

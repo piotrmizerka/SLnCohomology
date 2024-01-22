@@ -18,14 +18,13 @@ function facets(polyhedral_cell, min_vectors, codim_1_cells)
     #=
     min_vectors must be ordered in the same way as the points in polyhedral_cell
     =#
+    removehredundancy!(polyhedral_cell) # removes redundant halfspaces s.t. halfspaces become facets
     vertex_list = collect(points(polyhedral_cell))
     for halfspace in eachindex(halfspaces(polyhedral_cell))
         # create a list with all min_vectors that lie on this facet
         vertices_facet = []
         for vertex in incidentpoints(polyhedral_cell, halfspace) # read out using Oscar/polymake in the long term, this might get shorter
-            # also careful: At the moment, I'm not reducing the cells, this should be done or avoided by using polymake
-            # But it's checked that the results agree with what was done before
-            vertex_index = findfirst(x -> x==vertex, vertex_list) # this should somehow get quicker, but I couldn't find out how
+            vertex_index = findfirst(x -> x==vertex, vertex_list)
             push!(vertices_facet,min_vectors[vertex_index])
         end
         #now turn into matrix again to make accessible to other calculations, orbits extract_basis

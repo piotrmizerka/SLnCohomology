@@ -3,8 +3,8 @@
 const N = 5
 const p = 2
 
-# using Pkg
-# Pkg.activate(normpath(joinpath(@__DIR__, "../../")))
+using Pkg
+Pkg.activate(normpath(joinpath(@__DIR__, "../../")))
 using LinearAlgebra
 ENV["JULIA_NUM_THREADS"] = Sys.CPU_THREADS÷2
 LinearAlgebra.BLAS.set_num_threads(Sys.CPU_THREADS÷2)
@@ -20,7 +20,7 @@ using Serialization
 using SLnCohomology
 using SparseArrays
 
-sln_laplacian_data = deserialize(joinpath(@__DIR__, "scripts/differentials_computation/precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"))
+sln_laplacian_data = deserialize(joinpath(@__DIR__, "../differentials_computation/precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"))
 Δ = sln_laplacian_data["laplacians"]
 
 # TODO: pay attention if no deletes are necessary due to non-standard differentials

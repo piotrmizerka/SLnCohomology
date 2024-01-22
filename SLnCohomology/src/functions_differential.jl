@@ -189,3 +189,24 @@ function boundaries_dict(oriented_cells_sln)
     end
     return boundaries_sln
 end
+
+function same_orbit(matrix1,matrix2)
+    #= Checks whether matrix1 lies in the SL_n orbit as matrix2
+    =#
+    if length(stabiliser_coset_SL(quadratic_form(matrix1),quadratic_form(matrix2))) > 0
+        return true
+    else
+        return false
+    end
+end
+
+function orbit_in_list(matrix,list)
+    #= Checks whether matrix lies in the SL_n orbit of one of the elements in list
+    =#
+    for matrix2 in list
+        if same_orbit(matrix,matrix2)
+            return true
+        end
+    end
+    return false
+end

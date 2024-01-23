@@ -11,6 +11,7 @@ using PermutationGroups
 using Permutations
 using Serialization
 using SparseArrays
+using Polyhedra
 
 include("helpful_functions.jl")
 include("permutation_matrices.jl")

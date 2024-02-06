@@ -1,5 +1,7 @@
 module SLnCohomology
 
+using AbstractAlgebra
+using BlockArrays
 using Combinatorics
 using GAP
 using Groups

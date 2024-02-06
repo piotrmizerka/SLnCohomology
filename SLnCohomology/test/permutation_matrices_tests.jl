@@ -83,7 +83,7 @@ end
     slnp_order_ = SLnCohomology.slnp_order(3,p)
     for s in S_inv
         rep_mat = SLnCohomology.representing_matrix(RG(s),p,perm_mats)
-        @test size(rep_mat) == (slnp_order_,slnp_order_) # the sieze of perm matrix must be equal to SLₙ(p) order
+        @test size(rep_mat) == (slnp_order_,slnp_order_) # the size of perm matrix must be equal to SLₙ(p) order
         @test length(SparseArrays.nonzeroinds(sparse(vec(rep_mat)))) == slnp_order_ # the number of nonzero indices must equal to perm degree
     end
     # representing_matrix must preserve group ring structure:

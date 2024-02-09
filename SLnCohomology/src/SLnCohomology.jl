@@ -9,16 +9,19 @@ using JSON
 using JuMP
 using LinearAlgebra
 using LowCohomologySOS
-using PermutationGroups
 using Permutations
+using PermutationGroups
+using Polyhedra
 using Serialization
 using SparseArrays
-using Polyhedra
 
-include("helpful_functions.jl")
-include("permutation_matrices.jl")
-include("Plesken_Souvignier.jl")
+import GLPK
+
 include("functions_differential.jl")
+include("helpful_functions.jl")
+include("matrices_to_sln.jl")
+include("nontrivial_cohomology.jl")
+include("Plesken_Souvignier.jl")
 include("Voronoi_complexes.jl")
 
 end

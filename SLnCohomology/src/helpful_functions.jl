@@ -6,116 +6,108 @@ function averaged_rep(elt_list, RG)
     return sum_//stab_order
 end
 
-# Auxililiary function describing the differentials provided by Benjamin as RG elements.
-# "differential_data" contains a list of pairs (coeff,RG element) and the function returns 
-# the sum of coeff*RG element for all pairs. RG element is in our case the averaged representative
-# computed with "averaged_rep" funcion.
-# TODO: delete this as a part of common code for slns (sl3 to adopt)
-function rg_elt(differential_data)
-    return sum(dd[1]*dd[2] for dd in differential_data)
-end
-
-# Representing nxn arrays as honest elements of SL(n,ℤ). 
-# We apply Gaussian elimination and Euclidean algorithm.
-function gelt_from_matrix(M::AbstractMatrix, sln)
-    inv_result, temp_matrix = one(sln), copy(M)
-    N = size(first(gens(sln)))[1]
-    for i in 1:(N-1)
-        factor, temp_matrix = reduce_column_down(i,temp_matrix, sln)
-        inv_result = factor*inv_result
+# Representation matrix of g∈G induced from the rep π of H≤G.
+# Requires also providing coset_data, degree of π, and modulus p.
+function ind_H_to_G(g, π, coset_data, deg::Integer, p::Integer)
+    cosets = coset_data["cosets"]
+    cosets_representatives = coset_data["cosets_representatives"]
+    cosets_representatives_indices = coset_data["cosets_representatives_indices"]
+    total_size = deg*length(cosets_representatives)
+    result = spzeros(total_size,total_size)
+    for i in eachindex(cosets_representatives)
+        gi = cosets_representatives[i]
+        ggi = matrix_mod_p(g*gi,p)
+        gj = cosets[ggi]
+        j = cosets_representatives_indices[gj]
+        gj_inv = inv(AbstractAlgebra.matrix(GF(p),gj))
+        h = Int8.(AbstractAlgebra.lift.(gj_inv*AbstractAlgebra.matrix(GF(p),ggi)))
+        set_block(result, π[h], j, i)
     end
-    for i in N:-1:2
-        factor, temp_matrix = reduce_column_up(i,temp_matrix, sln)
-        inv_result = factor*inv_result
-    end
-    result = inv_result^(-1)
     return result
 end
-function reduce_column_up(col::Integer, M::AbstractMatrix, sln)
-    result_factor, result_matrix = one(sln), copy(M)
-    for k in (col-1):-1:1
-        mult = div(M[k,col],M[col,col])
-        factor, result_matrix = add_row_multiplicity(k,col,-mult,result_matrix,sln)
-        result_factor = factor*result_factor
+
+function matrix_mod_p(M,p::Integer)
+    result = copy(M)
+    for i in eachindex(result)
+        result[i] %= p
     end
-    return result_factor, result_matrix
+    return result
 end
-function reduce_column_down(col::Integer, M::AbstractMatrix, sln)
-    result_factor, result_matrix = one(sln), copy(M)
-    N = size(first(gens(sln)))[1]
-    for k in (col+1):N
-        factor, result_matrix = euclidean_algorithm(col,k,col,result_matrix,sln)
-        result_factor = factor*result_factor
+
+# Permutation matrices of permutation correpsonding the regular rep of matrices from SL(N,p).
+# Used only for the regular rep of SL(3,3) which has been to moved tests.
+function permutation_matrices(matrices, slnp_dict, p::Integer)
+    result = Dict()
+    for M in matrices
+        left_action_matrix(i) = projection(M*matrices[i],p)
+        perm = PermutationGroups.Perm([slnp_dict[left_action_matrix(i)] for i in eachindex(matrices)])
+        result[M] = permutation_matrix(perm)
     end
-    return result_factor, result_matrix
+    return result
 end
-function euclidean_algorithm(i_row::Integer, j_row::Integer, col::Integer, M::AbstractMatrix, sln)
-    result_factor, result_matrix = one(sln), copy(M)
-    it = 0
-    while result_matrix[i_row,col] != 1 && result_matrix[i_row,col] != -1 && it < 10
-        if abs(result_matrix[i_row,col]) <= abs(result_matrix[j_row,col]) && result_matrix[i_row,col] != 0
-            mult = div(result_matrix[j_row,col],result_matrix[i_row,col])
-            factor, result_matrix = add_row_multiplicity(j_row,i_row,-mult,result_matrix,sln)
-            result_factor = factor*result_factor
-        elseif result_matrix[j_row,col] != 0
-            factor, result_matrix = flip_two_rows(i_row,j_row,result_matrix,sln)
-            result_factor = factor*result_factor
-        end
-        it += 1
+
+# Permutation matrix of a permutation.
+# Used only for the regular rep of SL(3,3) which has been to moved tests.
+function permutation_matrix(perm)
+    degree = maximum(perm.d)
+    result = spzeros(degree,degree)
+    for j in eachindex(perm.d)
+        result[perm.d[j],j] = 1
     end
-    if result_matrix[j_row,col] != 0 # zeroing the jth row
-        mult = div(result_matrix[j_row,col],result_matrix[i_row,col])
-        factor, result_matrix = add_row_multiplicity(j_row,i_row,-mult,result_matrix,sln)
-        result_factor = factor*result_factor
-    end
-    if result_matrix[i_row,col] != 1 # we want 1 instead of -1 in the ith row
-        factor, result_matrix = invert_two_rows(i_row,j_row,result_matrix,sln)
-        result_factor = factor*result_factor
-    end
-    return result_factor, result_matrix
+    return result
 end
-function add_row_multiplicity(i::Integer, j::Integer, mult::Integer, M::AbstractMatrix, sln)
-    E(i,j) = E_(i,j,sln)
-    N = size(first(gens(sln)))[1]
-    if mult != -1 && mult != 1
-        result_factor = E(i,j)^mult
-    elseif mult == 1
-        result_factor = E(i,j)
-    else
-        result_factor = E(i,j)^(-1)
-    end
-    result_matrix = copy(M)
-    for k in 1:N
-        result_matrix[i,k] = M[i,k]+mult*M[j,k]
-    end
-    return result_factor, result_matrix
-end
-function flip_two_rows(i::Integer, j::Integer, M::AbstractMatrix, sln)
-    E(i,j) = E_(i,j,sln)
-    result_factor, result_matrix = E(i,j)*E(j,i)^(-1)*E(i,j), copy(M)
-    N = size(first(gens(sln)))[1]
-    for k in 1:N
-        result_matrix[i,k] = M[j,k]
-        result_matrix[j,k] = -M[i,k]
-    end
-    return result_factor, result_matrix
-end
-function invert_two_rows(i::Integer, j::Integer, M::AbstractMatrix, sln)
-    E(i,j) = E_(i,j,sln)
-    result_factor, result_matrix = E(i,j)^2*E(j,i)^(-1)*E(i,j)^2*E(j,i)^(-1), copy(M)
-    N = size(first(gens(sln)))[1]
-    for k in 1:N
-        result_matrix[i,k] = -M[i,k]
-        result_matrix[j,k] = -M[j,k]
-    end
-    return result_factor, result_matrix
-end
-function E_(i::Integer, j::Integer, sln)
-    N = size(first(gens(sln)))[1]
-    Eij = MatrixGroups.ElementaryMatrix{N}(i,j,Int8(1))
-    for s in gens(sln)
-        if MatrixGroups.matrix_repr(s) == MatrixGroups.matrix_repr(Eij)
-            return s
+
+# Compute projection onto SL(N,p) from a matrix from SL(N,Z)
+function projection(M, p::Integer)
+    result = Int8.(zeros(size(M)[1],size(M)[2]))
+    for i in 1:size(M)[1]
+        for j in 1:size(M)[2]
+            result[i,j] = Int8(M[i,j]%p)
+            result[i,j] = (result[i,j] >= 0 ? result[i,j] : result[i,j]+p)
         end
     end
+    return result
+end
+
+# Fills (i,j)th square block of a square matrix M with a square matrix B  
+function set_block(M, B, i::Integer, j::Integer)
+    deg = size(B)[1]
+    for it in SparseArrays.nonzeroinds(sparse(vec(B)))
+        reminder, ratio = it%deg, div(it,deg)
+        k = (reminder == 0) ? deg : reminder
+        l = (it%deg == 0) ? ratio : (ratio+1)
+        M[(i-1)*deg+k,(j-1)*deg+l] = B[k,l]
+    end
+end
+
+# Save all elts from SL(n,p) - brute force approach
+# Keep their order in the dictionary - we use it later to create permutation matrices
+# Used only for the regular rep of SL(3,3) which has been to moved tests.
+function slnp(n::Integer,p::Integer)
+    result = Dict()
+    values = 0:(p-1)
+    tuples = collect(Iterators.product(fill(values, n^2)...))
+    i = 0
+    matrices_tuples_order = []
+    for tuple in tuples
+        candidate = [tuple[(i-1)*n+j] for i in 1:n,j in 1:n]
+        det_as_integer = Int(det(candidate))
+        det_mod_p = (det_as_integer%p >= 0 ? det_as_integer%p : det_as_integer%p+p)
+        if det_mod_p == 1
+            i += 1
+            result[candidate] = i
+            push!(matrices_tuples_order,candidate)
+        end
+    end
+    @assert i == slnp_order(n,p)
+    return result, matrices_tuples_order
+end
+
+function slnp_order(n::Integer, p::Integer)
+    result = 1
+    for i in 0:(n-1)
+        result *= (p^n-p^i)
+    end
+    result = div(result,p-1)
+    return result
 end

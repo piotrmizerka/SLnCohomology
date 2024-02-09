@@ -2,7 +2,7 @@
 const N = 4
 const p = 2
 
-# include("../differentials_computation/sln_laplacians.jl");
+# include("../differentials_computation/sln_laplacians.jl"); # uncomment if serialized Laplacians not available.
 using Pkg
 Pkg.activate(normpath(joinpath(@__DIR__, "../../")))
 using LinearAlgebra
@@ -69,7 +69,6 @@ elseif N == 4 || N == 5
         proper_perm = [Int64.(cycle) for cycle in json_perm]
         push!(permutations,proper_perm)
     end
-    # For technical reasons (due to Julia permutation conversions), we must write each permutation including trivial cycles
     deg = SLnCohomology.permutations_degree(permutations)
     function integer_matrix(i::Integer)
         return [GAP.evalstr("Int(H_list["*string(i)*"]["*string(k)*","*string(l)*"]);") for k in 1:N,l in 1:N]
@@ -108,7 +107,6 @@ sbgp_ind = length(coset_data["cosets_representatives"])
 πΔ = Dict()
 for entry in Δ
     n = entry[1]
-    @info n
     πΔ[n] = vcat(
         [
             hcat([SLnCohomology.representing_matrix(Δ[n][i,j],π, deg, p, sbgp_ind) for j in 1:size(Δ[n])[2]]...)

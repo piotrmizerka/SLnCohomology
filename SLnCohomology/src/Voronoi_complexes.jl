@@ -1,6 +1,3 @@
-using Polyhedra
-import GLPK
-
 function create_polyhedron(cell)
     #= cell is a matrix whose columns are the minimal vectors spanning the corresponding polyhedron
     creates a polyhedron in the polyhedra package
@@ -8,7 +5,7 @@ function create_polyhedron(cell)
     lib = DefaultLibrary{Float64}(GLPK.Optimizer) # one could set different libraries here
     poly_vertices = Vector{Int64}[]
     for col in eachcol(cell)
-        push!(poly_vertices,vec(SLnCohomology.quadratic_form(col)))
+        push!(poly_vertices,vec(quadratic_form(col)))
     end
     poly_cell = polyhedron(vrep(poly_vertices),lib) 
     return poly_cell
@@ -29,7 +26,7 @@ function facets(polyhedral_cell, min_vectors, codim_1_cells)
         end
         #now turn into matrix again to make accessible to other calculations, orbits extract_basis
         facet = transpose(reduce(vcat,transpose.(vertices_facet)))
-        if isposdef(SLnCohomology.quadratic_form(facet))
+        if isposdef(quadratic_form(facet))
             # then it intersects the interior non-trivially - make this a separate function to increase readability
             if !orbit_in_list(facet, codim_1_cells)
                 push!(codim_1_cells,facet)
@@ -80,7 +77,7 @@ function Voronoi_cells(n,perfect_forms)
     perfect_forms_min_vec_rep = []
     for perfect_form in perfect_forms
         # compute the minimal vectors and put them in the right format
-        push!(perfect_forms_min_vec_rep, transpose(reduce(vcat,transpose.(SLnCohomology.minimal_vectors(perfect_form)))))
+        push!(perfect_forms_min_vec_rep, transpose(reduce(vcat,transpose.(minimal_vectors(perfect_form)))))
         println("I computed minimal vectors.")
     end
     cells_SLn[dim_symmetric_space] = perfect_forms_min_vec_rep # the perfect forms are the top cells

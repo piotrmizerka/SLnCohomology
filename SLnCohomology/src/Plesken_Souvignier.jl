@@ -1,8 +1,5 @@
 # The functions here are adapted from https://git.rwth-aachen.de/jens.brandt/plesken-souvignier/-/tree/master/src
 
-using LinearAlgebra
-using GAP
-
 function shortestVectors(gramMatrix::Array{Int64,2}, limitNormSquare::Int64 = -1)::Array{Array{Int64,1},1}
 	@assert(size(gramMatrix,1) == size(gramMatrix,2))
 	if limitNormSquare < 0

@@ -1,22 +1,5 @@
 # The functions here are adapted from https://git.rwth-aachen.de/jens.brandt/plesken-souvignier/-/tree/master/src
 
-function shortestVectors(gramMatrix::Array{Int64,2}, limitNormSquare::Int64 = -1)::Array{Array{Int64,1},1}
-	@assert(size(gramMatrix,1) == size(gramMatrix,2))
-	if limitNormSquare < 0
-		limitNormSquare = maximum(Diagonal(gramMatrix))
-	end
-	gramMatrixGAP = GAP.julia_to_gap(map(GAP.julia_to_gap, gramMatrix))
-	recGAP = GAP.Globals.ShortestVectors(gramMatrixGAP, limitNormSquare)
-	vectors = GAP.gap_to_julia(Array{Array{Int64,1},1}, recGAP.vectors)
-	return vcat(map( v -> [v,-v], vectors)...)
-end
-
-function scalarProduct(gramMatrix::Array{Int64,2}, vector1::Array{Int64,1}, vector2::Array{Int64,1} = vector1)::Int64
-	@assert(size(gramMatrix,1) == length(vector1))
-	@assert(size(gramMatrix,2) == length(vector2))
-	return transpose(vector1) * gramMatrix * vector2
-end
-
 function hasVectorAccordingScalarProducts(gramMatrix::Array{Int64,2}, vector::Array{Int64,1}, vectorComparisonList::Array{Array{Int64,1},1}, scalarProductsComparisonList::Array{Int64,1})::Bool
 	n = length(vectorComparisonList)
 	@assert(size(gramMatrix,1) == size(gramMatrix,2))
@@ -31,6 +14,16 @@ function hasVectorAccordingScalarProducts(gramMatrix::Array{Int64,2}, vector::Ar
 		end
 	end
 	return true
+end
+
+function minimal_vectors(form)
+    # assumes that the input is a perfect form, returns its minimal vectors
+    for norm in 1:500
+        if length(shortestLines(form,norm)) > 0
+            return shortestLines(form,norm)
+        end
+    end
+	error("the norm of shortest vectors is too big")
 end
 
 function pleskenSouvignier_two_matrices(gramMatrix1::Array{Int64,2},gramMatrix2::Array{Int64,2}, shortVectors::Array{Array{Int64,1},1}, imagesOfBasis::Array{Array{Int64,1},1} = convert(Array{Array{Int64,1},1}, []))::Array{Array{Int64,2},1}
@@ -51,6 +44,12 @@ function pleskenSouvignier_two_matrices(gramMatrix1::Array{Int64,2},gramMatrix2:
 	return res
 end
 
+function scalarProduct(gramMatrix::Array{Int64,2}, vector1::Array{Int64,1}, vector2::Array{Int64,1} = vector1)::Int64
+	@assert(size(gramMatrix,1) == length(vector1))
+	@assert(size(gramMatrix,2) == length(vector2))
+	return transpose(vector1) * gramMatrix * vector2
+end
+
 # basically the "shortest vectors" function, but now only one representative from every line; done a bit stupidly...
 function shortestLines(gramMatrix::Array{Int64,2}, limitNormSquare::Int64 = -1)::Array{Array{Int64,1},1}
 	@assert(size(gramMatrix,1) == size(gramMatrix,2))
@@ -63,12 +62,13 @@ function shortestLines(gramMatrix::Array{Int64,2}, limitNormSquare::Int64 = -1):
 	return vcat(map( v -> [v], vectors)...)
 end
 
-function minimal_vectors(form)
-    # assumes that the input is a perfect form, returns its minimal vectors
-    for norm in 1:500
-        if length(shortestLines(form,norm)) > 0
-            return shortestLines(form,norm)
-        end
-    end
-	error("the norm of shortest vectors is too big")
+function shortestVectors(gramMatrix::Array{Int64,2}, limitNormSquare::Int64 = -1)::Array{Array{Int64,1},1}
+	@assert(size(gramMatrix,1) == size(gramMatrix,2))
+	if limitNormSquare < 0
+		limitNormSquare = maximum(Diagonal(gramMatrix))
+	end
+	gramMatrixGAP = GAP.julia_to_gap(map(GAP.julia_to_gap, gramMatrix))
+	recGAP = GAP.Globals.ShortestVectors(gramMatrixGAP, limitNormSquare)
+	vectors = GAP.gap_to_julia(Array{Array{Int64,1},1}, recGAP.vectors)
+	return vcat(map( v -> [v,-v], vectors)...)
 end

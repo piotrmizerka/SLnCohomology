@@ -1,11 +1,11 @@
 using Groups
 using LowCohomologySOS
+using Multisets
 using PermutationGroups
+using Serialization
 using SLnCohomology
 using SparseArrays
 using Test
-using Serialization
-using Multisets
 
 function cyclic_group(n::Integer)
     A = Alphabet([:a, :A], [2, 1])
@@ -15,7 +15,8 @@ function cyclic_group(n::Integer)
 end
 
 @testset "SLnCohomology" begin
+    include("functions_differential_tests.jl")
     include("helpful_functions_tests.jl")
-    include("permutation_matrices_tests.jl")
-    include("boundary_tests.jl")
+    include("matrices_to_sln_tests.jl")
+    include("nontrivial_cohomology_tests.jl")
 end

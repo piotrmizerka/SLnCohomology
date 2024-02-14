@@ -1,4 +1,5 @@
 # These parameters are subject to appropriate change.
+# Available options of (N,p): (3,3), (4,2), (5,2).
 const N = 4
 const p = 2
 
@@ -82,7 +83,7 @@ elseif N == 4 || N == 5
     for i in 1:GAP.evalstr("Order(H_in_G);")
         proper_perm = SLnCohomology.standarize_permutation(permutations[i],deg)
         proper_perm_2 = [x for x in proper_perm]
-        perm_stand = Permutation(proper_perm_2)
+        perm_stand = Permutations.Permutation(proper_perm_2)
         even_sign = GAP.evalstr("H_list["*string(i)*"] in index_two_H;")
         if !even_sign
             subgroup_rep[integer_matrix(i)] = sparse(-Int.(Matrix(perm_stand)^(-1)))
@@ -102,14 +103,20 @@ support = SLnCohomology.laplacians_support(Δ,p)
 coset_data = SLnCohomology.coset_data(H,sl_n_p_matrices,p)
 π = SLnCohomology.ind_rep_dict(support,subgroup_rep,coset_data,deg,p)
 
+# Test: check if π is orthogonal (don't do it for SL(5,2) due to its size)
+if N != 5
+    for g in support
+        @assert Matrix(π[g])^(-1) == π[g]'
+    end
+end
+
 # Compute Laplacians evaluated on the induced representation
-sbgp_ind = length(coset_data["cosets_representatives"])
 πΔ = Dict()
 for entry in Δ
     n = entry[1]
     πΔ[n] = vcat(
         [
-            hcat([SLnCohomology.representing_matrix(Δ[n][i,j],π, deg, p, sbgp_ind) for j in 1:size(Δ[n])[2]]...)
+            hcat([SLnCohomology.representing_matrix(Δ[n][i,j],π, p) for j in 1:size(Δ[n])[2]]...)
             for i in 1:size(Δ[n])[1]
         ]...
     )
@@ -120,29 +127,3 @@ for entry in Δ
     n = entry[1]
     @info "rank H^"*string(div(N*(N-1),2)+N-n-1)*" = "*string(size(πΔ[n])[1]-rank(πΔ[n]))
 end
-
-# # TODO: move this function to tests
-# function representing_matrix_trivial(ξ,p::Integer)
-#     result = zero(typeof(first(ξ.coeffs)))
-#     RG = parent(ξ)
-#     for x in RG.basis
-#         result += ξ(x)
-#     end
-#     return result
-# end
-# # TODO: move all sanity checks to tests!
-# # A sanity check - since H¹(SL(3,Z),π) = 0, we shall get the full rank for the perm repr of Δ₄:
-# @assert πΔ[4]' == πΔ[4]
-# @assert size(πΔ[4])[1]-rank(πΔ[4]) == 0
-
-# # A sanity check: since the permutation representation has a nontrivial fixed pont set, 
-# # we shall get nontrivial zero cohomology for this representation.
-# @assert πΔ[5]' == πΔ[5]
-# size(πΔ[5])[1]-rank(πΔ[5]) # non-full rank - means nontrivial 0-cohomology
-
-# # H² - we get nontrivial cohomology!
-# @assert πΔ[3]' == πΔ[3]
-# size(πΔ[3])[1]-rank(πΔ[3]) # non-full rank - means nontrivial 2-cohomology
-
-# @assert πΔ[2]' == πΔ[2]
-# size(πΔ[2])[1]-rank(πΔ[2])

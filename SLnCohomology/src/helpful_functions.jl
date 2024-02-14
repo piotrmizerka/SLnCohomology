@@ -26,20 +26,24 @@ function ind_H_to_G(g, π, coset_data, deg::Integer, p::Integer)
     return result
 end
 
+# Compute projection onto SL(N,p) from a matrix from SL(N,Z)
 function matrix_mod_p(M,p::Integer)
-    result = copy(M)
-    for i in eachindex(result)
-        result[i] %= p
+    result = Int8.(zeros(size(M)[1],size(M)[2]))
+    for i in 1:size(M)[1]
+        for j in 1:size(M)[2]
+            result[i,j] = Int8(M[i,j]%p)
+            result[i,j] = (result[i,j] >= 0 ? result[i,j] : result[i,j]+p)
+        end
     end
     return result
 end
 
-# Permutation matrices of permutation correpsonding the regular rep of matrices from SL(N,p).
+# Permutation matrices of permutations correpsonding the regular rep of matrices from SL(N,p).
 # Used only for the regular rep of SL(3,3) which has been to moved tests.
-function permutation_matrices(matrices, slnp_dict, p::Integer)
+function regular_rep(matrices, slnp_dict, p::Integer)
     result = Dict()
     for M in matrices
-        left_action_matrix(i) = projection(M*matrices[i],p)
+        left_action_matrix(i) = matrix_mod_p(M*matrices[i],p)
         perm = PermutationGroups.Perm([slnp_dict[left_action_matrix(i)] for i in eachindex(matrices)])
         result[M] = permutation_matrix(perm)
     end
@@ -53,18 +57,6 @@ function permutation_matrix(perm)
     result = spzeros(degree,degree)
     for j in eachindex(perm.d)
         result[perm.d[j],j] = 1
-    end
-    return result
-end
-
-# Compute projection onto SL(N,p) from a matrix from SL(N,Z)
-function projection(M, p::Integer)
-    result = Int8.(zeros(size(M)[1],size(M)[2]))
-    for i in 1:size(M)[1]
-        for j in 1:size(M)[2]
-            result[i,j] = Int8(M[i,j]%p)
-            result[i,j] = (result[i,j] >= 0 ? result[i,j] : result[i,j]+p)
-        end
     end
     return result
 end
@@ -91,7 +83,7 @@ function slnp(n::Integer,p::Integer)
     matrices_tuples_order = []
     for tuple in tuples
         candidate = [tuple[(i-1)*n+j] for i in 1:n,j in 1:n]
-        det_as_integer = Int(det(candidate))
+        det_as_integer = round(Int,det(candidate))
         det_mod_p = (det_as_integer%p >= 0 ? det_as_integer%p : det_as_integer%p+p)
         if det_mod_p == 1
             i += 1

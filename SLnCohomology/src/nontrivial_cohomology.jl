@@ -48,7 +48,7 @@ function laplacians_support(Δ, p::Integer)
         for k in eachindex(Δ[n])
             for i in SparseArrays.nonzeroinds(Δ[n][k].coeffs)
                 x = RG.basis[i]
-                proj = projection(MatrixGroups.matrix_repr(x),p)
+                proj = matrix_mod_p(MatrixGroups.matrix_repr(x),p)
                 push!(support,proj)
             end
         end
@@ -57,6 +57,8 @@ function laplacians_support(Δ, p::Integer)
 end
 
 # Check a sufficient condition for non-existence of invariant vectors.
+# Returns a subspace which is always non-invariant.
+# Yields sth nontrivial for flip-perm reps only.
 function no_inv_subspace(H, π)
     no_inv_subspace = Set([])
     for h in H
@@ -108,14 +110,14 @@ function read_slnp_matrices(file_path,N::Integer)
     return sl_n_p_matrices
 end
 
-# Permutation matrix corresponding do a group ring elt ξ given by the perm repr
-function representing_matrix(ξ, π, deg::Integer, p::Integer, subgroup_index::Integer)
-    n = deg*subgroup_index
-    result = typeof(first(ξ.coeffs)).(spzeros(n,n))
+# Permutation matrix corresponding to a group ring elt ξ given by the repr π
+function representing_matrix(ξ, π, p::Integer)
     RG = parent(ξ)
+    n = size(π[matrix_mod_p(MatrixGroups.matrix_repr(first(RG.basis)),p)])[1]
+    result = typeof(first(ξ.coeffs)).(spzeros(n,n))
     for i in SparseArrays.nonzeroinds(ξ.coeffs)
         x = RG.basis[i]
-        proj = projection(MatrixGroups.matrix_repr(x),p)
+        proj = matrix_mod_p(MatrixGroups.matrix_repr(x),p)
         result += ξ(x)*π[proj]
     end
     return Matrix(result)

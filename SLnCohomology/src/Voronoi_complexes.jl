@@ -71,7 +71,7 @@ end
 function Voronoi_cells(n,perfect_forms)
     #= perfect_forms: list of perfect forms in dimension n, up to action of GL
     =#
-    dim_symmetric_space = n*(n+1)/2-1
+    dim_symmetric_space = div(n*(n+1),2)-1
     cells_SLn = Dict()
     perfect_forms = add_sl_n_orbits(perfect_forms)
     perfect_forms_min_vec_rep = []

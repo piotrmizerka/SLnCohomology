@@ -19,4 +19,5 @@ end
     include("helpful_functions_tests.jl")
     include("matrices_to_sln_tests.jl")
     include("nontrivial_cohomology_tests.jl")
+    include("Voronoi_complexes_tests.jl")
 end

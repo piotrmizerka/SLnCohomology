@@ -49,10 +49,10 @@ A_5 = [2 -1 0 0 0
 forms_5 = [D_5, A_5_plus3, A_5]
 
 cells_SL3 = SLnCohomology.Voronoi_cells(3,forms_3)
-serialize(joinpath(@__DIR__, "precomputed_cells/sl3_cells_new.sjl"), cells_SL3)
+serialize(joinpath(@__DIR__, "precomputed_cells/sl3_cells.sjl"), cells_SL3)
 
 cells_SL4 = SLnCohomology.Voronoi_cells(4,forms_4)
-serialize(joinpath(@__DIR__, "precomputed_cells/sl4_cells_new.sjl"), cells_SL4)
+serialize(joinpath(@__DIR__, "precomputed_cells/sl4_cells.sjl"), cells_SL4)
 
 cells_SL5 = SLnCohomology.Voronoi_cells(5,forms_5)
-serialize(joinpath(@__DIR__, "precomputed_cells/sl5_cells_new.sjl"), cells_SL5)
+serialize(joinpath(@__DIR__, "precomputed_cells/sl5_cells.sjl"), cells_SL5)

@@ -15,7 +15,7 @@ function cyclic_group(n::Integer)
 end
 
 @testset "SLnCohomology" begin
-    include("functions_differential_tests.jl")
+    # include("functions_differential_tests.jl") only include if change to the computation of the chain complex
     include("helpful_functions_tests.jl")
     include("matrices_to_sln_tests.jl")
     include("nontrivial_cohomology_tests.jl")

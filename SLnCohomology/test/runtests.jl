@@ -1,4 +1,5 @@
 using Groups
+using LinearAlgebra
 using LowCohomologySOS
 using Multisets
 using PermutationGroups

@@ -22,10 +22,19 @@ using SLnCohomology
 using SparseArrays
 
 sln_laplacian_data = deserialize(joinpath(@__DIR__, "../differentials_computation/precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"))
-Δ = sln_laplacian_data["laplacians"]
+Δ_all = sln_laplacian_data["laplacians"]
+Δ = Dict()
+if N != 5
+    Δ == Δ_all
+end
 if N == 4 # don't consider 1st cohomology for SL(4,Z) since one of the cells was not simplicial
     delete!(Δ,8)
 end
+if N == 5
+    Δ[10] = Δ_all[10]
+end
+
+@info "Laplacian loaded"
 
 # Compute orthogonal representations without invariant vectors of a subgroup H of SL(N,p).
 subgroup_rep = Dict()
@@ -110,6 +119,8 @@ if N != 5
     end
 end
 
+@info "Representation computed"
+
 # Compute Laplacians evaluated on the induced representation
 πΔ = Dict()
 for entry in Δ
@@ -122,8 +133,10 @@ for entry in Δ
     )
 end
 
+@info "Rep eveluation on laplacian computed"
+
 # Show cohomologies' ranks for the above Laplacians
 for entry in Δ
-    n = entry[1]
+    n = Int8(entry[1])
     @info "rank H^"*string(div(N*(N-1),2)+N-n-1)*" = "*string(size(πΔ[n])[1]-rank(πΔ[n]))
 end

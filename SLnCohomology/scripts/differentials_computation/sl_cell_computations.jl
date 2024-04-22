@@ -8,6 +8,11 @@ LinearAlgebra.BLAS.set_num_threads(Sys.CPU_THREADS÷2)
 using Serialization
 using SLnCohomology
 
+#SL_2
+A_2 = [2 -1
+-1 2]
+forms_2 = [A_2]
+
 #SL_3
 A_3 = [2 -1 0
 -1 2 -1
@@ -47,6 +52,9 @@ A_5 = [2 -1 0 0 0
 0 0 0 -1 2]
 
 forms_5 = [D_5, A_5_plus3, A_5]
+
+cells_SL2 = SLnCohomology.Voronoi_cells(2,forms_2)
+serialize(joinpath(@__DIR__, "precomputed_cells/sl2_cells.sjl"), cells_SL2)
 
 cells_SL3 = SLnCohomology.Voronoi_cells(3,forms_3)
 serialize(joinpath(@__DIR__, "precomputed_cells/sl3_cells.sjl"), cells_SL3)

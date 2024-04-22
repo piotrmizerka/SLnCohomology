@@ -21,4 +21,5 @@ end
     include("matrices_to_sln_tests.jl")
     include("nontrivial_cohomology_tests.jl")
     include("Voronoi_complexes_tests.jl")
+    include("cohomology_trivial_coefficients_tests.jl")
 end

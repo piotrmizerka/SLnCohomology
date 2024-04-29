@@ -22,6 +22,7 @@ using SLnCohomology
 using SparseArrays
 
 sln_laplacian_data = deserialize(joinpath(@__DIR__, "../differentials_computation/precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"))
+# sln_laplacian_data = deserialize(joinpath(@__DIR__, "../differentials_computation/precomputed_laplacians/sl"*string(N)*"_laplacians_new.sjl"))
 Δ_all = sln_laplacian_data["laplacians"]
 Δ = Dict()
 if N != 5
@@ -87,7 +88,7 @@ elseif N == 4 || N == 5
     if N == 4
         GAP.evalstr("index_two_H := normal_sbgps_H[4];") 
     else
-        GAP.evalstr("index_two_H := normal_sbgps_H[5];")
+        GAP.evalstr("index_two_H := normal_sbgps_H[6];")
     end
     for i in 1:GAP.evalstr("Order(H_in_G);")
         proper_perm = SLnCohomology.standarize_permutation(permutations[i],deg)

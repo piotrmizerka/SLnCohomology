@@ -1,8 +1,3 @@
-# These parameters are subject to appropriate change.
-# Available options of (N,p): (3,3), (4,2).
-const N = 4
-const p = 2
-
 # include("./differentials_computation/sln_laplacians.jl"); # uncomment if serialized Laplacians not available.
 using Pkg
 Pkg.activate(normpath(joinpath(@__DIR__, "../")))
@@ -19,6 +14,11 @@ using Permutations
 using Serialization
 using SLnCohomology
 using SparseArrays
+
+# These parameters are subject to appropriate change.
+# Available options of (N,p): (3,3), (4,2).
+N = 4
+p = 2
 
 sln_laplacian_data = deserialize(joinpath(@__DIR__, "./differentials_computation/precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"))
 Δ = sln_laplacian_data["laplacians"]

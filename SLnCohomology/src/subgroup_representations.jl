@@ -48,8 +48,11 @@ function flip_representation(
     K
 )
     result = Dict()
+    deg = size(first(π)[2])[1]
+    I_deg = [(i == j ? Int8(1) : Int8(0)) for i in 1:deg, j in 1:deg]
+    I_deg = reshape(I_deg, deg, deg)
     for h in keys(sgp_gens_expr) # note that H = keys(sgp_gens_expr)
-        val = I
+        val = I_deg
         for s in sgp_gens_expr[h]
             val *= π[s]
         end

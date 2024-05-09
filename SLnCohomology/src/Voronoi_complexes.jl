@@ -17,6 +17,54 @@ function add_sl_n_orbits(list_of_forms)
     return list_of_forms
 end
 
+# Returns the cells for SL(n,ℤ)
+function cells_sln(n::Integer)
+    if n == 2
+        A_2 = [2 -1
+               -1 2]
+        forms = [A_2]
+    elseif n == 3
+        A_3 = [2 -1 0
+               -1 2 -1
+               0 -1 2]
+        forms = [A_3]
+    elseif n == 4
+        D_4 = [2 0 1 0
+               0 2 -1 0
+               1 -1 2 -1
+               0 0 -1 2]
+
+        A_4 = [2 -1 0 0
+               -1 2 -1 0
+               0 -1 2 -1
+               0 0 -1 2]
+
+        forms = [D_4, A_4]
+    elseif n == 5
+        D_5 = [2 0 1 0 0
+               0 2 -1 0 0
+               1 -1 2 -1 0
+               0 0 -1 2 -1
+               0 0 0 -1 2]
+
+        A_5_plus3 = [6 -3 0 0 0
+                     -3 6 -3 0 3
+                     0 -3 6 -3 0
+                     0 0 -3 6 0
+                     0 3 0 0 4]
+
+        A_5 = [2 -1 0 0 0
+               -1 2 -1 0 0
+               0 -1 2 -1 0
+               0 0 -1 2 -1
+               0 0 0 -1 2]
+
+        forms = [D_5, A_5_plus3, A_5]
+    end
+
+    return SLnCohomology.Voronoi_cells(n,forms)
+end
+
 function create_polyhedron(cell)
     #= cell is a matrix whose columns are the minimal vectors spanning the corresponding polyhedron
     creates a polyhedron in the polyhedra package

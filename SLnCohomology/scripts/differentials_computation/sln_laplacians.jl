@@ -1,9 +1,19 @@
+using Pkg
+Pkg.activate(normpath(joinpath(@__DIR__, "../../")))
+using LinearAlgebra
+ENV["JULIA_NUM_THREADS"] = Sys.CPU_THREADS÷2
+LinearAlgebra.BLAS.set_num_threads(Sys.CPU_THREADS÷2)
+
+using Groups
+using LowCohomologySOS
+using Serialization
+using SLnCohomology
+
 # This parameter (hard-coded) is subject to appropriate change.
-# Comment out if not calculating precomputed Laplacians only.
 N = 3
 
-# Let's load the precompuded differential data (can take about 24hours ???)
-include("sln_utils.jl");
+# Compute the differentials
+include("sln_boundary_data.jl");
 
 # Sanity checks for vanishing compositions of differentials
 # we can do sanity check for consecutive degrees only

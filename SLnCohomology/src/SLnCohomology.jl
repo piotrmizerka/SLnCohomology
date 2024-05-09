@@ -22,6 +22,7 @@ include("helpful_functions.jl")
 include("matrices_to_sln.jl")
 include("nontrivial_cohomology.jl")
 include("Plesken_Souvignier.jl")
+include("subgroup_representations.jl")
 include("Voronoi_complexes.jl")
 
 end

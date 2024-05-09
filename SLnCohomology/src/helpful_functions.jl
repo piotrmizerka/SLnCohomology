@@ -6,6 +6,15 @@ function averaged_rep(elt_list, RG)
     return sum_//stab_order
 end
 
+# Compute the determinant of a integer matrix.
+# We don't use the built-in det function directly as it converts
+# determinants of integer matrices to floats by default 
+# and we want to work with exact numbers. Instead, we use the
+# built-in det after casting to rationals to ensure exact operations.
+function determinant(M)
+    return Int8(det([M[i,j]//1 for i in 1:size(M)[1],j in 1:size(M)[2]]))
+end
+
 # Representation matrix of g∈G induced from the rep π of H≤G.
 # Requires also providing coset_data, degree of π, and modulus p.
 function ind_H_to_G(g, π, coset_data, deg::Integer, p::Integer)
@@ -70,6 +79,28 @@ function set_block(M, B, i::Integer, j::Integer)
         l = (it%deg == 0) ? ratio : (ratio+1)
         M[(i-1)*deg+k,(j-1)*deg+l] = B[k,l]
     end
+end
+
+# Store all elements of SL(n,p) as matrices over integers.
+function sl_n_p(
+    N::Integer,
+    p::Integer
+)
+    result = []
+    all_tuples = collect(Iterators.product(fill(0:(p-1), N^2)...))
+    for tuple in all_tuples
+        candidate = ones(Int8,N,N)
+        for it in eachindex(tuple)
+            i, j = div(it-1,N)+1, (it-1)%N+1
+            candidate[i,j] = tuple[it]
+        end
+        temp = determinant(candidate)%p
+        det_mod_p = (temp >= 0 ? temp : temp+p)
+        if det_mod_p == 1
+            push!(result,candidate)
+        end
+    end
+    return result
 end
 
 # Save all elts from SL(n,p) - brute force approach

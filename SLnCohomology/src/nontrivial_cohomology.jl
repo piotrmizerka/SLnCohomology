@@ -88,28 +88,6 @@ function permutations_degree(permutations)
     return deg
 end
 
-# Read (and store in a Julia variable) the SL(N,p) matrices saved in the corresponing text file.
-function read_slnp_matrices(file_path,N::Integer)
-    sl_n_p_matrices = []
-    file = open(file_path, "r")
-    i = 0
-    current_matrix = Int8.(zeros(N,N))
-    for line in eachline(file)
-        linex = replace(line, r"\s+" => "")
-        linexx = replace(linex, r"\." => "0")
-        for j in eachindex(linexx)
-            current_matrix[i%N+1,j] = parse(Int8,linexx[j])
-        end
-        if i%N == N-1
-            push!(sl_n_p_matrices,current_matrix)
-            current_matrix = Int8.(zeros(N,N))
-        end
-        i += 1
-    end
-    close(file)
-    return sl_n_p_matrices
-end
-
 # Permutation matrix corresponding to a group ring elt ξ given by the repr π
 function representing_matrix(ξ, π, p::Integer)
     RG = parent(ξ)

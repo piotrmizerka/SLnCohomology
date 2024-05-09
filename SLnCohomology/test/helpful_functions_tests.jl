@@ -100,14 +100,80 @@ end
     @test size(π_reg_Δ[3])[1]-rank(π_reg_Δ[3]) > 0 # non-full rank - means nontrivial 2-cohomology
 end
 
-@testset "slnp" begin
-    N = 4
-    p = 2
-    matrices_dict, matrices_tuples_order = SLnCohomology.slnp(N,p)
-    @test length(matrices_dict) == length(matrices_tuples_order) == SLnCohomology.slnp_order(N,p)
-    for i in eachindex(matrices_tuples_order)
-        @test matrices_dict[matrices_tuples_order[i]] == i
-    end
+@testset "sl_n_p" begin
+    sl22 = SLnCohomology.sl_n_p(2,2)
+    sl23 = SLnCohomology.sl_n_p(2,3)
+
+    @test Set(sl22) == Set([
+        [1 0;
+         0 1],
+        [0 1;
+         1 0],
+        [0 1;
+         1 1],
+        [1 1;
+         0 1],
+        [1 1;
+         1 0],
+        [1 0;
+         1 1],
+    ])
+    @test Set(sl23) == Set([
+        [1 0;
+         0 1],
+        [0 2;
+         1 0],
+        [0 2;
+         1 2],
+        [2 0;
+         0 2],
+        [0 2;
+         1 1],
+        [2 0;
+         2 2],
+        [0 1;
+         2 0],
+        [0 1;
+         2 1],
+        [1 2;
+         0 1],
+        [2 2;
+         1 0],
+        [2 0;
+         1 2],
+        [2 1;
+         0 2],
+        [2 1;
+         1 1],
+        [0 1;
+         2 2],
+        [1 1;
+         2 0],
+        [1 0;
+         2 1],
+        [1 1;
+         0 1],
+        [1 2;
+         1 0],
+        [1 1;
+         1 2],
+        [2 2;
+         0 2],
+        [1 0;
+         1 1],
+        [1 2;
+         2 2],
+        [2 1;
+         2 0],
+        [2 2;
+         2 1]
+    ])
+
+    @test length(SLnCohomology.sl_n_p(2,5)) == SLnCohomology.slnp_order(2,5)
+    @test length(SLnCohomology.sl_n_p(2,7)) == SLnCohomology.slnp_order(2,7)
+    @test length(SLnCohomology.sl_n_p(2,11)) == SLnCohomology.slnp_order(2,11)
+    @test length(SLnCohomology.sl_n_p(3,2)) == SLnCohomology.slnp_order(3,2)
+    @test length(SLnCohomology.sl_n_p(3,3)) == SLnCohomology.slnp_order(3,3)
 end
 
 @testset "slnp_order" begin

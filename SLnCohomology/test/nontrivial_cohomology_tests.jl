@@ -123,44 +123,6 @@ end
     @test SLnCohomology.permutations_degree([[[13 2],[3]],[[7,12],[5]]]) == 13
 end
 
-@testset "read_slnp_matrices" begin
-    # for the tests' sake, we don't require that matrices have determinant one
-    file_path = joinpath(@__DIR__, "./sln_p_matrices_test/sl3_3_matrices_test.txt")
-    sl_3_3_matrices = SLnCohomology.read_slnp_matrices(file_path,3)
-    @test sl_3_3_matrices == [
-        [1 0 1;
-         0 0 2;
-         2 0 0],
-        [0 0 1;
-         0 1 0;
-         2 0 0],
-        [2 0 0;
-         1 0 2;
-         0 0 1]
-    ]
-    file_path = joinpath(@__DIR__, "./sln_p_matrices_test/sl4_2_matrices_test.txt")
-    sl_4_2_matrices = SLnCohomology.read_slnp_matrices(file_path,4)
-    @test sl_4_2_matrices == [
-        [0 0 1 0;
-         0 1 0 0;
-         0 0 0 1;
-         1 1 1 0],
-        [1 0 1 0;
-         0 1 0 0;
-         1 0 0 0;
-         0 0 1 0]
-    ]
-    file_path = joinpath(@__DIR__, "./sln_p_matrices_test/sl5_2_matrices_test.txt")
-    sl_5_2_matrices = SLnCohomology.read_slnp_matrices(file_path,5)
-    @test sl_5_2_matrices == [
-        [1 0 1 0 0;
-         1 1 0 0 0;
-         0 0 0 1 0;
-         1 1 1 0 0;
-         0 0 0 0 1]
-    ]
-end
-
 @testset "representing_matrix" begin
     p = 2
     matrices_dict, matrices_tuples_order = SLnCohomology.slnp(3,p)

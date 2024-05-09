@@ -1,6 +1,6 @@
 # This parameter (hard-coded) is subject to appropriate change.
 # Comment out if not calculating precomputed Laplacians only.
-const N = 4
+N = 3
 
 # Let's load the precompuded differential data (can take about 24hours ???)
 include("sln_utils.jl");

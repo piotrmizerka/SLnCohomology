@@ -337,27 +337,27 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GAP]]
 deps = ["Artifacts", "Compat", "Downloads", "GAP_jll", "GAP_lib_jll", "GAP_pkg_juliainterface_jll", "InteractiveUtils", "Libdl", "MacroTools", "Markdown", "Ncurses_jll", "Pidfile", "Pkg", "REPL", "Random", "Scratch"]
-git-tree-sha1 = "9015d4f7ce86124a61563f2d84991f91c856865c"
+git-tree-sha1 = "e5da01e64245204b9a4fd1557a7e3fcb129ba156"
 uuid = "c863536a-3901-11e9-33e7-d5cd0df7b904"
-version = "0.10.2"
+version = "0.11.0"
 
 [[deps.GAP_jll]]
-deps = ["Artifacts", "GMP_jll", "JLLWrappers", "Libdl", "Pkg", "Readline_jll", "Zlib_jll"]
-git-tree-sha1 = "45d873af20e37eeb86aacfa7c735864eb2c5dfd3"
+deps = ["Artifacts", "GMP_jll", "JLLWrappers", "Libdl", "Readline_jll", "Zlib_jll"]
+git-tree-sha1 = "6f36db66bf82ba4ca92f2d7fe8ea55011c5d2755"
 uuid = "5cd7a574-2c56-5be2-91dc-c8bc375b9ddf"
-version = "400.1200.200+7"
+version = "400.1300.0+2"
 
 [[deps.GAP_lib_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "473b619163e30d9cc58d4a8f9d412e6ea8910fcf"
+git-tree-sha1 = "c9b425cf0f4d5e29216198fe77ea2cb03f3ba4ef"
 uuid = "de1ad85e-c930-5cd4-919d-ccd3fcafd1a3"
-version = "400.1201.200+0"
+version = "400.1300.0+0"
 
 [[deps.GAP_pkg_juliainterface_jll]]
 deps = ["Artifacts", "GAP_jll", "GAP_lib_jll", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "0b7c0382f73540e79ffc64830fe95f30babfbc15"
+git-tree-sha1 = "d21aa5e5dde43027986b91a41370b2c4929e878e"
 uuid = "ba154793-3a7d-51ee-8800-e295b0cf7374"
-version = "0.800.300+2"
+version = "0.900.0+0"
 
 [[deps.GLPK]]
 deps = ["GLPK_jll", "MathOptInterface"]
@@ -656,9 +656,9 @@ version = "1.2.1"
 
 [[deps.Ncurses_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "bd4eb207e17878ceec404e74130639b6dda8b63b"
+git-tree-sha1 = "3ac1ca10bae513c9cc8f83d7734b921b8007b574"
 uuid = "68e3532b-a499-55ff-9963-d1c0c0748b3a"
-version = "6.4.1+0"
+version = "6.5.0+0"
 
 [[deps.NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"

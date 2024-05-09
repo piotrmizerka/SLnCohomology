@@ -12,7 +12,7 @@ using SLnCohomology
 sln = MatrixGroups.SpecialLinearGroup{N}(Int8) # N has to be defined before including this file
 sln_gens = gens(sln)
 
-# Load the data from Ben
+# Load the boundary and stabiliser data
 sln_bound_stab = deserialize(joinpath(@__DIR__, "./precomputed_boundaries/sl"*string(N)*"_bound_stab.sjl"))
 
 # Extract homology degrees

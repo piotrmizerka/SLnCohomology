@@ -70,12 +70,12 @@ function boundaries_in_group_ring_with_orientation(cell,basis,cell_dimension,cel
 end
 
 function extract_basis(list_of_vectors)
-    #= Picks a linearly independent subset of list_of_vectors
+    #= Picks a linearly independent subset of list_of_vectors (required to be integer or rational)
     =#
     partial_basis = hcat(list_of_vectors[1])
     for vector in list_of_vectors # bit wasteful to check first element again
         potential_partial_basis = hcat(partial_basis,vector)
-        if rank(potential_partial_basis)> rank(partial_basis)
+        if rankx(potential_partial_basis)> rankx(partial_basis)
             partial_basis = potential_partial_basis
         end
     end

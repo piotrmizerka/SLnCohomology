@@ -10,7 +10,7 @@ using Serialization
 using SLnCohomology
 
 # This parameter (hard-coded) is subject to appropriate change.
-N = 3
+N = 2
 
 # Compute the differentials
 include("sln_boundary_data.jl");

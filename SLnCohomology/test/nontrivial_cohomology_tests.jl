@@ -22,9 +22,9 @@
     coset_data = SLnCohomology.coset_data(C₃,sl_2_2_matrices,p)
     @test length(coset_data["cosets_representatives"]) == 
           length(coset_data["cosets_representatives_indices"]) == 2
-    @test coset_data["cosets"][id_] == coset_data["cosets"][a] == coset_data["cosets"][a2] &&
-          coset_data["cosets"][b] == coset_data["cosets"][ba] == coset_data["cosets"][ba2] &&
-          coset_data["cosets"][id_] != coset_data["cosets"][b]
+    @test coset_data["elt_coset_labels"][id_] == coset_data["elt_coset_labels"][a] == coset_data["elt_coset_labels"][a2] &&
+          coset_data["elt_coset_labels"][b] == coset_data["elt_coset_labels"][ba] == coset_data["elt_coset_labels"][ba2] &&
+          coset_data["elt_coset_labels"][id_] != coset_data["elt_coset_labels"][b]
     @test Set(coset_data["cosets_representatives"]) == Set([id_,b]) ||
           Set(coset_data["cosets_representatives"]) == Set([id_,ba]) ||
           Set(coset_data["cosets_representatives"]) == Set([id_,ba2]) ||
@@ -42,12 +42,12 @@
     coset_data = SLnCohomology.coset_data(C₂,sl_2_2_matrices,p)
     @test length(coset_data["cosets_representatives"]) == 
           length(coset_data["cosets_representatives_indices"]) == 3
-    @test coset_data["cosets"][id_] == coset_data["cosets"][b] &&
-          coset_data["cosets"][a] == coset_data["cosets"][ba2] &&
-          coset_data["cosets"][a2] == coset_data["cosets"][ba] &&
-          coset_data["cosets"][id_] != coset_data["cosets"][a] &&
-          coset_data["cosets"][id_] != coset_data["cosets"][a2] &&
-          coset_data["cosets"][a] != coset_data["cosets"][a2]
+    @test coset_data["elt_coset_labels"][id_] == coset_data["elt_coset_labels"][b] &&
+          coset_data["elt_coset_labels"][a] == coset_data["elt_coset_labels"][ba2] &&
+          coset_data["elt_coset_labels"][a2] == coset_data["elt_coset_labels"][ba] &&
+          coset_data["elt_coset_labels"][id_] != coset_data["elt_coset_labels"][a] &&
+          coset_data["elt_coset_labels"][id_] != coset_data["elt_coset_labels"][a2] &&
+          coset_data["elt_coset_labels"][a] != coset_data["elt_coset_labels"][a2]
     @test Set(coset_data["cosets_representatives"]) == Set([id_,a,a2]) ||
           Set(coset_data["cosets_representatives"]) == Set([id_,a,ba]) ||
           Set(coset_data["cosets_representatives"]) == Set([id_,ba,a2]) ||

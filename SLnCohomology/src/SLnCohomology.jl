@@ -5,9 +5,11 @@ using BlockArrays
 using Combinatorics
 using GAP
 using Groups
+using IntervalLinearAlgebra
 using JSON
 using JuMP
 using LinearAlgebra
+using LinearAlgebraX
 using LowCohomologySOS
 using Permutations
 using PermutationGroups

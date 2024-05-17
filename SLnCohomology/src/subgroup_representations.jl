@@ -21,29 +21,29 @@ function flip_permutation_representation(
                0 1 0 0
                0 0 1 0
                0 0 0 1]
-        a = [0 1 0 0
+        x = [0 1 0 0
              0 1 1 1
              1 1 1 1
              0 0 0 1]
-        b = [0 1 0 0
+        y = [0 1 0 0
              0 0 0 1
              1 1 0 1
              0 1 1 1]
-        a2 = matrix_mod_p(a^2, p)
-        ba = matrix_mod_p(b*a, p)
-        ba2 = matrix_mod_p(b*a^2, p)
+        x2 = matrix_mod_p(x^2, p)
+        yx = matrix_mod_p(y*x, p)
+        yx2 = matrix_mod_p(y*x^2, p)
         for h in H
             if elt_coset_labels[h] == elt_coset_labels[id_]
                 subgroup_rep[h] = Matrix(Permutations.Permutation([[1],[2],[3]]))
-            elseif elt_coset_labels[h] == elt_coset_labels[a]
+            elseif elt_coset_labels[h] == elt_coset_labels[x]
                 subgroup_rep[h] = Matrix(Permutations.Permutation([[1,2,3]]))
-            elseif elt_coset_labels[h] == elt_coset_labels[a2]
+            elseif elt_coset_labels[h] == elt_coset_labels[x2]
                 subgroup_rep[h] = Matrix(Permutations.Permutation([[3,2,1]]))
-            elseif elt_coset_labels[h] == elt_coset_labels[b]
+            elseif elt_coset_labels[h] == elt_coset_labels[y]
                 subgroup_rep[h] = -Matrix(Permutations.Permutation([[1,2],[3]])) 
-            elseif elt_coset_labels[h] == elt_coset_labels[ba]    
+            elseif elt_coset_labels[h] == elt_coset_labels[yx]    
                 subgroup_rep[h] = -Matrix(Permutations.Permutation([[2,3],[1]]))      
-            elseif elt_coset_labels[h] == elt_coset_labels[ba2]
+            elseif elt_coset_labels[h] == elt_coset_labels[yx2]
                 subgroup_rep[h] = -Matrix(Permutations.Permutation([[1,3],[2]]))     
             end
         end

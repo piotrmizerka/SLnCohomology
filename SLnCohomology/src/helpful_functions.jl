@@ -15,26 +15,6 @@ function determinant(M)
     return Int8(det([M[i,j]//1 for i in 1:size(M)[1],j in 1:size(M)[2]]))
 end
 
-# Representation matrix of g∈G induced from the rep π of H≤G.
-# Requires also providing coset_data, degree of π, and modulus p.
-function ind_H_to_G(g, π, coset_data, deg::Integer, p::Integer)
-    cosets = coset_data["cosets"]
-    cosets_representatives = coset_data["cosets_representatives"]
-    cosets_representatives_indices = coset_data["cosets_representatives_indices"]
-    total_size = deg*length(cosets_representatives)
-    result = spzeros(total_size,total_size)
-    for i in eachindex(cosets_representatives)
-        gi = cosets_representatives[i]
-        ggi = matrix_mod_p(g*gi,p)
-        gj = cosets[ggi]
-        j = cosets_representatives_indices[gj]
-        gj_inv = inv(AbstractAlgebra.matrix(GF(p),gj))
-        h = Int8.(AbstractAlgebra.lift.(gj_inv*AbstractAlgebra.matrix(GF(p),ggi)))
-        set_block(result, π[h], j, i)
-    end
-    return result
-end
-
 # Compute projection onto SL(N,p) from a matrix from SL(N,Z)
 function matrix_mod_p(M,p::Integer)
     result = Int8.(zeros(size(M)[1],size(M)[2]))

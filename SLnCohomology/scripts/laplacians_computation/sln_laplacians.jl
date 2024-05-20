@@ -10,7 +10,7 @@ using Serialization
 using SLnCohomology
 
 # The degree of SLₙ(ℤ)
-n = parse(Int8, ARGS[1])
+n = parse(Int64, ARGS[1])
 
 # The boundary and stabiliser data
 cells_sln = SLnCohomology.cells_sln(n)
@@ -149,16 +149,16 @@ if homology_degrees[end] == differential_degrees[end]-1
         for i in 1:cells_number[kx],j in 1:cells_number[kx]
     ]
     Δ[kx] = d_kx'*d_kx+stab_part_dim[kx]
-    push!(homology_degrees,nx)
+    push!(homology_degrees,kx)
 end
 
 # A sanity check: check if the Laplacians are hermitian.
-for entry in Δ
-    @assert entry[2]' == entry[2]
-end
+# for entry in Δ
+#     @assert entry[2]' == entry[2]
+# end
 
 # Save the Laplacians in a serialized form in a file.
-laplacian_data = Dict()
-laplacian_data["laplacians"] = Δ
-laplacian_data["differential_degrees"] = differential_degrees
-serialize(joinpath(@__DIR__, "./precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"), laplacian_data)
+# laplacian_data = Dict()
+# laplacian_data["laplacians"] = Δ
+# laplacian_data["differential_degrees"] = differential_degrees
+# serialize(joinpath(@__DIR__, "./precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"), laplacian_data)

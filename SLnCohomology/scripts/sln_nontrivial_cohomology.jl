@@ -17,7 +17,7 @@ using SparseArrays
 
 # The degree n of SLₙ(ℤ) is given as a paremeter
 # Available options of (n,p): (3,3), (4,2).
-n = parse(Int8, ARGS[1])
+n = parse(Int64, ARGS[1])
 p = (n == 3 ? 3 : 2)
 
 sln_laplacian_data = deserialize(joinpath(@__DIR__, "./laplacians_computation/precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"))

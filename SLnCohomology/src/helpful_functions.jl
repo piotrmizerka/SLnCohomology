@@ -15,6 +15,23 @@ function determinant(M)
     return Int8(det([M[i,j]//1 for i in 1:size(M)[1],j in 1:size(M)[2]]))
 end
 
+# Support of Laplacians (common for all o them).
+function laplacians_support(Δ, p::Integer)
+    support = []
+    for entry in Δ
+        n = entry[1]
+        RG = parent(first(Δ[n]))
+        for k in eachindex(Δ[n])
+            for i in SparseArrays.nonzeroinds(Δ[n][k].coeffs)
+                x = RG.basis[i]
+                proj = matrix_mod_p(MatrixGroups.matrix_repr(x),p)
+                push!(support,proj)
+            end
+        end
+    end
+    return collect(Set(support))
+end
+
 # Compute projection onto SL(N,p) from a matrix from SL(N,Z)
 function matrix_mod_p(M,p::Integer)
     result = Int8.(zeros(size(M)[1],size(M)[2]))
@@ -23,6 +40,34 @@ function matrix_mod_p(M,p::Integer)
             result[i,j] = Int8(M[i,j]%p)
             result[i,j] = (result[i,j] >= 0 ? result[i,j] : result[i,j]+p)
         end
+    end
+    return result
+end
+
+# Check a sufficient condition for non-existence of invariant vectors.
+# Returns a subspace which is always non-invariant.
+# Yields sth nontrivial for flip-perm reps only.
+function no_inv_subspace(H, π)
+    no_inv_subspace = Set([])
+    for h in H
+        no_inv_h = []
+        for i in 1:size(π[h])[1]
+            if π[h][i,i] == -1
+                push!(no_inv_h,i)
+            end
+        end
+        no_inv_subspace = union!(no_inv_subspace,no_inv_h)
+    end
+    return no_inv_subspace
+end
+
+# Permutation matrix of a permutation.
+# Used only for the regular rep of SL(3,3) which has been to moved tests.
+function permutation_matrix(perm)
+    degree = maximum(perm.d)
+    result = spzeros(Int64,degree,degree)
+    for j in eachindex(perm.d)
+        result[perm.d[j],j] = 1//1
     end
     return result
 end
@@ -36,29 +81,21 @@ function regular_rep(matrices, slnp_dict, p::Integer)
         perm = PermutationGroups.Perm([slnp_dict[left_action_matrix(i)] for i in eachindex(matrices)])
         result[M] = permutation_matrix(perm)
     end
+
     return result
 end
 
-# Permutation matrix of a permutation.
-# Used only for the regular rep of SL(3,3) which has been to moved tests.
-function permutation_matrix(perm)
-    degree = maximum(perm.d)
-    result = spzeros(degree,degree)
-    for j in eachindex(perm.d)
-        result[perm.d[j],j] = 1
+# Permutation matrix corresponding to a group ring elt ξ given by the repr π
+function representing_matrix(ξ, π, p::Integer)
+    RG = parent(ξ)
+    n = size(π[matrix_mod_p(MatrixGroups.matrix_repr(first(RG.basis)),p)])[1]
+    result = typeof(first(ξ.coeffs)).(spzeros(n,n))
+    for i in SparseArrays.nonzeroinds(ξ.coeffs)
+        x = RG.basis[i]
+        proj = matrix_mod_p(MatrixGroups.matrix_repr(x),p)
+        result += ξ(x)*π[proj]
     end
-    return result
-end
-
-# Fills (i,j)th square block of a square matrix M with a square matrix B  
-function set_block(M, B, i::Integer, j::Integer)
-    deg = size(B)[1]
-    for it in SparseArrays.nonzeroinds(sparse(vec(B)))
-        reminder, ratio = it%deg, div(it,deg)
-        k = (reminder == 0) ? deg : reminder
-        l = (it%deg == 0) ? ratio : (ratio+1)
-        M[(i-1)*deg+k,(j-1)*deg+l] = B[k,l]
-    end
+    return Matrix(result)
 end
 
 # Store all elements of SL(n,p) as matrices over integers.
@@ -81,29 +118,6 @@ function sl_n_p(
         end
     end
     return result
-end
-
-# Save all elts from SL(n,p) - brute force approach
-# Keep their order in the dictionary - we use it later to create permutation matrices
-# Used only for the regular rep of SL(3,3) which has been to moved tests.
-function slnp(n::Integer,p::Integer)
-    result = Dict()
-    values = 0:(p-1)
-    tuples = collect(Iterators.product(fill(values, n^2)...))
-    i = 0
-    matrices_tuples_order = []
-    for tuple in tuples
-        candidate = [tuple[(i-1)*n+j] for i in 1:n,j in 1:n]
-        det_as_integer = round(Int,det(candidate))
-        det_mod_p = (det_as_integer%p >= 0 ? det_as_integer%p : det_as_integer%p+p)
-        if det_mod_p == 1
-            i += 1
-            result[candidate] = i
-            push!(matrices_tuples_order,candidate)
-        end
-    end
-    @assert i == slnp_order(n,p)
-    return result, matrices_tuples_order
 end
 
 function slnp_order(n::Integer, p::Integer)

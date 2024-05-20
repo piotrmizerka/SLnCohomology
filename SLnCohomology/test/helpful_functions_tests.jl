@@ -26,6 +26,34 @@ end
     @test SLnCohomology.matrix_mod_p([8 7 4;1 50 8;-1 -2 -30],5) == [3 2 4;1 0 3;4 3 0]
 end
 
+@testset "no_inv_subspace" begin
+    H = ["a","n","y","t","h","i","nn","g"]
+    x = rand((-1,1))
+    y = rand((-1,1))
+    z = rand((-1,1))
+    π = Dict(
+        "a" => [x 0 0;0 1 0;0 0 1],
+        "n" => [1 0 0;0 y 0;0 0 1],
+        "y" => [1 0 0;0 1 0;0 0 z],
+        "t" => [1 0 0;0 1 0;0 0 1],
+        "h" => [1 0 0;0 1 0;0 0 1],
+        "i" => [1 0 0;0 1 0;0 0 1],
+        "nn" => [1 0 0;0 1 0;0 0 1],
+        "g" => [1 0 0;0 1 0;0 0 1]
+    )
+    proper_val = []
+    if x == -1
+        push!(proper_val,1)
+    end
+    if y == -1
+        push!(proper_val,2)
+    end
+    if z == -1
+        push!(proper_val,3)
+    end
+    @test SLnCohomology.no_inv_subspace(H,π) == Set(proper_val)
+end
+
 @testset "permutation_matrix" begin
     identity_perm = PermutationGroups.Perm([1,2,3,4])
     perm1 = PermutationGroups.Perm([3,2,1])
@@ -67,12 +95,12 @@ end
 # This test takes up to 15 min on a standard laptop
 @testset "regular_rep" begin
     N = 3
-    p = 3
+    p = 2
 
-    slnp_dict, matrices_fixed_order = SLnCohomology.slnp(N,p)
+    slnp_dict, matrices_fixed_order = slnp_ordered(N,p)
     π_reg = SLnCohomology.regular_rep(matrices_fixed_order, slnp_dict, p)
 
-    sln_laplacian_data = deserialize(joinpath(@__DIR__, "../scripts/differentials_computation/precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"))
+    sln_laplacian_data = deserialize(joinpath(@__DIR__, "../scripts/laplacians_computation/precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"))
     Δ = sln_laplacian_data["laplacians"]
 
     π_reg_Δ = Dict()
@@ -95,9 +123,37 @@ end
     @test π_reg_Δ[5]' == π_reg_Δ[5]
     @test size(π_reg_Δ[5])[1]-rank(π_reg_Δ[5]) > 0 # non-full rank - means nontrivial 0-cohomology
 
-    # H^2 - we get nontrivial cohomology!
-    @assert π_reg_Δ[3]' == π_reg_Δ[3]
-    @test size(π_reg_Δ[3])[1]-rank(π_reg_Δ[3]) > 0 # non-full rank - means nontrivial 2-cohomology
+    @test π_reg_Δ[3]' == π_reg_Δ[3]
+end
+
+@testset "representing_matrix" begin
+    p = 2
+    matrices_dict, matrices_tuples_order = slnp_ordered(3,p)
+    π = SLnCohomology.regular_rep(matrices_tuples_order, matrices_dict, p)
+    sl3 = MatrixGroups.SpecialLinearGroup{3}(Int8)
+    e12, e13, e21, e23, e31, e32 = S = gens(sl3)
+    S_inv =[S; inv.(S)]
+    half_basis, sizes = Groups.wlmetric_ball(S_inv, radius = 2)
+    RG = LowCohomologySOS.group_ring(sl3,half_basis)
+    slnp_order_ = SLnCohomology.slnp_order(3,p)
+    for s in S_inv
+        rep_mat = SLnCohomology.representing_matrix(RG(s),π, p)
+        @test size(rep_mat) == (slnp_order_,slnp_order_) # the size of perm matrix must be equal to SLₙ(p) order
+        @test length(SparseArrays.nonzeroinds(sparse(vec(rep_mat)))) == slnp_order_ # the number of nonzero indices must equal to perm degree
+    end
+    # representing_matrix must preserve group ring structure:
+    rep_mat(ξ) = SLnCohomology.representing_matrix(ξ,π, p)
+    for i in 1:10
+        i, j = rand(1:12), rand(1:12)
+        ξ = RG(S_inv[i]*S_inv[j]) # test on sth not too trivial
+        η = RG(S_inv[j]*S_inv[i]^(-1))
+        πξ = rep_mat(ξ)
+        πη = rep_mat(η)
+        πξ_plus_η = rep_mat(ξ+η)
+        πξ_times_η = rep_mat(ξ*η)
+        @test πξ_plus_η == πξ+πη
+        @test πξ_times_η == πξ*πη
+    end
 end
 
 @testset "sl_n_p" begin

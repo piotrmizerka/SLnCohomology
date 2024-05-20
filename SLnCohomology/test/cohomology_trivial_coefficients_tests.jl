@@ -6,7 +6,7 @@ cohomology_ranks_sl_5 = Dict(0=>1, 1=>0, 2=>0, 3=>0, 4=>0, 5=>0, 6=>1, 7=>0, 8=>
 
 function coh_trivial_rep(N)
     # Load Laplacian
-    sln_laplacian_data = deserialize(joinpath(@__DIR__, "../scripts/differentials_computation/precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"))
+    sln_laplacian_data = deserialize(joinpath(@__DIR__, "../scripts/laplacians_computation/precomputed_laplacians/sl"*string(N)*"_laplacians.sjl"))
     Δ_all = sln_laplacian_data["laplacians"]
     Δ = Dict()
     # non-simplicial arising for N=4 or 5, need to take only part of the Laplacian

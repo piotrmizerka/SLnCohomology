@@ -153,12 +153,12 @@ if homology_degrees[end] == differential_degrees[end]-1
 end
 
 # A sanity check: check if the Laplacians are hermitian.
-# for entry in Δ
-#     @assert entry[2]' == entry[2]
-# end
+for entry in Δ
+    @assert entry[2]' == entry[2]
+end
 
 # Save the Laplacians in a serialized form in a file.
-# laplacian_data = Dict()
-# laplacian_data["laplacians"] = Δ
-# laplacian_data["differential_degrees"] = differential_degrees
-# serialize(joinpath(@__DIR__, "./precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"), laplacian_data)
+laplacian_data = Dict()
+laplacian_data["laplacians"] = Δ
+laplacian_data["differential_degrees"] = differential_degrees
+serialize(joinpath(@__DIR__, "./precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"), laplacian_data)

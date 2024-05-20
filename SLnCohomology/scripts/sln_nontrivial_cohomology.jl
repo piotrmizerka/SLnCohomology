@@ -1,4 +1,3 @@
-# include("./differentials_computation/sln_laplacians.jl"); # uncomment if serialized Laplacians not available.
 using Pkg
 Pkg.activate(normpath(joinpath(@__DIR__, "../")))
 using LinearAlgebra
@@ -16,18 +15,18 @@ using Serialization
 using SLnCohomology
 using SparseArrays
 
-# These parameters are subject to appropriate change.
+# The degree n of SLₙ(ℤ) is given as a paremeter
 # Available options of (n,p): (3,3), (4,2).
-n = 4
-p = 2
+n = parse(Int8, ARGS[1])
+p = (n == 3 ? 3 : 2)
 
-sln_laplacian_data = deserialize(joinpath(@__DIR__, "./differentials_computation/precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"))
+sln_laplacian_data = deserialize(joinpath(@__DIR__, "./laplacians_computation/precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"))
 Δ = sln_laplacian_data["laplacians"]
 if n == 4 # don't consider 1st cohomology for SL(4,Z) since one of the cells was not simplicial
     delete!(Δ,8)
 end
 
-@info "Laplacian loaded"
+@info "Laplacians loaded"
 
 # Compute orthogonal representations without invariant vectors of a subgroup H of SL(n,p).
 subgroup_rep, deg = SLnCohomology.flip_permutation_representation(n,p)
@@ -60,7 +59,7 @@ for entry in Δ
     )
 end
 
-@info "Representation eveluation on laplacian computed"
+@info "Representation evaluation on the Laplacians computed"
 
 # Show cohomologies' ranks for the above Laplacians. 
 # We use the exact rank computation from LinearAlgebraX package: https://github.com/scheinerman/LinearAlgebraX.jl

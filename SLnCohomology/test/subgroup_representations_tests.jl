@@ -21,15 +21,14 @@
     end
 end
 
-@testset "subgroup_gens_expression" begin
+@testset "subgroup_from_gens" begin
     # Checking the orders only
 
     # SL(3,3)
     n, p = 3, 3
     gens_H, gens_N = SLnCohomology.symmetric_subgroups_gens(n,p)
-    H_gens_expr = SLnCohomology.subgroup_gens_expression(gens_H, p)
-    H = keys(H_gens_expr)
-    N = keys(SLnCohomology.subgroup_gens_expression(gens_N, p))
+    H = SLnCohomology.subgroup_from_gens(gens_H, p)
+    N = SLnCohomology.subgroup_from_gens(gens_N, p)
     @test length(H) == 36
     @test length(N) == 18
     for k in N
@@ -39,9 +38,8 @@ end
     # SL(4, 2)
     n, p = 4, 2
     gens_H, gens_N = SLnCohomology.symmetric_subgroups_gens(n,p)
-    H_gens_expr = SLnCohomology.subgroup_gens_expression(gens_H, p)
-    H = keys(H_gens_expr)
-    N = keys(SLnCohomology.subgroup_gens_expression(gens_N, p))
+    H = SLnCohomology.subgroup_from_gens(gens_H, p)
+    N = SLnCohomology.subgroup_from_gens(gens_N, p)
     @test length(H) == 576
     @test length(N) == 96
     for k in N

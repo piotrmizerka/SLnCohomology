@@ -4,10 +4,10 @@ function flip_permutation_representation(
     n::Integer,
     p::Integer
 )
-    gens_H, gens_N = symmetric_subgroups_gens(n,p)
-    H = keys(subgroup_gens_expression(gens_H, p)) # Express all elements of H as words in the distinguished generators of H.
-    N = keys(subgroup_gens_expression(gens_N, p)) # Compute the normal subgroup of H of our interest.
-    H_N = SLnCohomology.coset_data(N,H,p)
+    gens_H, gens_N = symmetric_subgroups_gens(n, p)
+    H = subgroup_from_gens(gens_H, p)
+    N = subgroup_from_gens(gens_N, p)
+    H_N = SLnCohomology.coset_data(N, H, p)
 
     subgroup_rep = Dict()
     if n == 3 && p == 3
@@ -61,31 +61,28 @@ function flip_permutation_representation(
 end
 
 # Given matrix generators gens_ (assumed to be symmetric in the sense that for all its elements 
-# their inverses are also in gens_) of a subgroup H of SL(N,p), express all elements of H as words 
-# in gens_ (not necessarily uniquely). Save the output in a dictionary.
-# Note that the subgroup H itself and slnp are not arguments of this function.
-function subgroup_gens_expression(
+# their inverses are also in gens_) of a subgroup H of SL(n,p), compute H.
+function subgroup_from_gens(
     gens_,
     p::Integer
 )
     result = Dict(x => [x] for x in gens_)
-    I_N = Matrix(UniformScaling(Int8(1)),size(first(gens_))[1],size(first(gens_))[1])
-    result[I_N] = []
+    I_n = Matrix(UniformScaling(Int8(1)),size(first(gens_))[1],size(first(gens_))[1])
+    result = [I_n]
     while true
-        old_result_length = length(result)
-        temp_keys = copy(keys(result))
-        for M in temp_keys
+        old_result = copy(result)
+        for M in old_result
             for s in gens_
                 sM, Ms = matrix_mod_p(s*M,p), matrix_mod_p(M*s,p)
-                if !(sM in keys(result))
-                    result[sM] = vcat([s],result[M])
+                if !(sM in result)
+                    push!(result,sM)
                 end
-                if !(Ms in keys(result))
-                    result[Ms] = vcat(result[M],[s])
+                if !(Ms in result)
+                    push!(result,Ms)
                 end
             end
         end
-        if length(result) == old_result_length
+        if length(result) == length(old_result)
             break
         end
     end

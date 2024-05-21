@@ -80,11 +80,10 @@ end
                          0 1 0;
                          0 0 1]
     for g in sl_2_2_matrices
-        @assert Matrix(π_ind[g])^(-1) == π_ind[g]'
-        @assert Matrix(π_ind[g])^(-1) == π_ind[invs[g]]
+        @test Matrix(π_ind[g])^(-1) == π_ind[g]' == π_ind[invs[g]]
         for h in sl_2_2_matrices
             gh = SLnCohomology.matrix_mod_p(g*h,p)
-            @assert π_ind[g]*π_ind[h] == π_ind[gh]
+            @test π_ind[g]*π_ind[h] == π_ind[gh]
         end
     end
 end

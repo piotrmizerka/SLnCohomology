@@ -50,8 +50,11 @@ function flip_permutation_representation(
         deg = 3
     end
 
-    # check the homomorphism condition
+    # check the homomorphism condition and that the entries are integer-typed
     for x in H_N["cosets_representatives"]
+        for entry in subgroup_rep[x]
+            @assert typeof(entry) <: Integer
+        end
         for y in H_N["cosets_representatives"]
             @assert subgroup_rep[matrix_mod_p(x*y,p)] == subgroup_rep[x]*subgroup_rep[y]
         end

@@ -30,7 +30,7 @@ function coset_data(H, G, p::Integer)
     )
 end
 
-# Representation matrix of g∈G induced from the rep π of H≤G.
+# Representation matrix of g ∈ G ≤ SL(n,p) induced from the rep π of H ≤ G.
 # Requires also providing coset_data, degree of π, and modulus p.
 function ind_H_to_G(g, π, coset_data, deg::Integer, p::Integer)
     elt_coset_labels = coset_data["elt_coset_labels"]
@@ -55,6 +55,9 @@ function ind_rep_dict(support, π, coset_data, deg::Integer, p::Integer)
     result = Dict()
     for g in support
         result[g] = ind_H_to_G(g, π, coset_data, deg, p)
+        for it in SparseArrays.nonzeroinds(sparse(vec(result[g])))
+            @assert typeof(result[g][it]) <: Integer # if one considers other representations, this may be subject to change
+        end
     end
     return result
 end

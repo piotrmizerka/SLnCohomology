@@ -95,6 +95,9 @@ function representing_matrix(ξ, π, p::Integer)
         proj = matrix_mod_p(MatrixGroups.matrix_repr(x),p)
         result += ξ(x)*π[proj]
     end
+    for it in SparseArrays.nonzeroinds(sparse(vec(result)))
+        @assert typeof(result[it]) <: Rational
+    end
     return Matrix(result)
 end
 

@@ -1,12 +1,12 @@
 function test_boundary_data(N)
-    cells_sln = deserialize(joinpath(@__DIR__, "../scripts/differentials_computation/precomputed_cells/sl"*string(N)*"_cells.sjl"))
+    cells_sln = SLnCohomology.cells_sln(N)
 
     # computing the chain complex with the new functions
     oriented_cells_sln = SLnCohomology.oriented_cells_dict(cells_sln)
     stabiliser_new = SLnCohomology.stabilisers_dict(oriented_cells_sln) # compute the stabilisers
     boundaries_new  = SLnCohomology.boundaries_dict(oriented_cells_sln) # compute the boundaries
 
-    sln_data_old = deserialize(joinpath(@__DIR__, "./old_data/sl"*string(N)*"_bound_stab_old.sjl"))
+    sln_data_old = deserialize(joinpath(@__DIR__, "./old_data/sl"*string(N)*"_bound_stab.sjl"))
     stabiliser_old = sln_data_old["stabilisers"]
     boundaries_old = sln_data_old["boundaries"]
     for dimension in keys(stabiliser_new)

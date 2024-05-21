@@ -16,7 +16,7 @@ function cyclic_group(n::Integer)
 end
 
 # Save all elts from SL(n,p) and keep their order in the dictionary.
-# We use it later to create permutation matrices.
+# We use it later in tests to create permutation matrices.
 function slnp_ordered(n::Integer,p::Integer)
     slnp_matrices = SLnCohomology.sl_n_p(n,p)
     matrices_orders = Dict(slnp_matrices[i] => i for i in eachindex(slnp_matrices))

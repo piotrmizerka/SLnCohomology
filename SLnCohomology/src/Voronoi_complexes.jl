@@ -8,9 +8,11 @@ function add_sl_n_orbits(list_of_forms)
         for form in list_of_forms
             SL_orbit = flip*form
             # check whether its in the orbit of one of the other cells
-            if ! orbit_in_list(SL_orbit,list_of_forms)
-                push!(list_of_forms,SL_orbit)
-            end   
+            if isposdef(SL_orbit)
+                if ! orbit_in_list(SL_orbit,list_of_forms)
+                    push!(list_of_forms,SL_orbit)
+                end   
+            end
         end        
     end
     # if dim is odd, GL and SL orbits are the same, so nothing tbd

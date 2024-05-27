@@ -16,14 +16,21 @@ function hasVectorAccordingScalarProducts(gramMatrix::Array{Int64,2}, vector::Ar
 	return true
 end
 
-function minimal_vectors(form)
-    # assumes that the input is a perfect form, returns its minimal vectors
-    for norm in 1:500
-        if length(shortestLines(form,norm)) > 0
-            return shortestLines(form,norm)
-        end
-    end
-	error("the norm of shortest vectors is too big")
+function minimal_vectors(gramMatrix::Array{Int64,2})::Array{Array{Int64,1},1}
+	@assert(size(gramMatrix,1) == size(gramMatrix,2))
+	limitNormSquare = maximum(Diagonal(gramMatrix))
+	gramMatrixGAP = GAP.julia_to_gap(map(GAP.julia_to_gap, gramMatrix))
+	recGAP = GAP.Globals.ShortestVectors(gramMatrixGAP, limitNormSquare)
+	vectors = GAP.gap_to_julia(Array{Array{Int64,1},1}, recGAP.vectors)
+	norms = GAP.gap_to_julia(Array{Int64,1}, recGAP.norms)
+	min_norm = minimum(norms)
+	min_vecs = []
+	for i in eachindex(vectors)
+		if norms[i] == min_norm
+			push!(min_vecs, vectors[i])
+		end
+	end
+	return min_vecs
 end
 
 function pleskenSouvignier_two_matrices(gramMatrix1::Array{Int64,2},gramMatrix2::Array{Int64,2}, shortVectors::Array{Array{Int64,1},1}, imagesOfBasis::Array{Array{Int64,1},1} = convert(Array{Array{Int64,1},1}, []))::Array{Array{Int64,2},1}

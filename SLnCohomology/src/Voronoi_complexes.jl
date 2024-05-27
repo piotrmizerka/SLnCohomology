@@ -1,3 +1,16 @@
+function isposdef_save(matrix)
+    #= isposdef can display incorrect results for singular matrices. This function is a saver version.
+    =#
+    if isapprox(det(matrix),0)
+        if detx(matrix) == 0 # this is an exact check
+            return false            
+        end
+    else
+        return isposdef(matrix)
+    end
+    error("Could not decide whether the matrix is positive definite.")
+end
+
 function add_sl_n_orbits(list_of_forms)
     #= Takes a list of forms, all of the same dimension such that they lie in distinct GL_n orbits. 
     Adds their SL_n orbits ot the list.
@@ -8,7 +21,7 @@ function add_sl_n_orbits(list_of_forms)
         for form in list_of_forms
             SL_orbit = flip*form
             # check whether its in the orbit of one of the other cells
-            if isposdef(SL_orbit)
+            if isposdef_save(SL_orbit)
                 if ! orbit_in_list(SL_orbit,list_of_forms)
                     push!(list_of_forms,SL_orbit)
                 end   
@@ -95,7 +108,7 @@ function facets(polyhedral_cell, min_vectors, codim_1_cells)
         end
         #now turn into matrix again to make accessible to other calculations, orbits extract_basis
         facet = transpose(reduce(vcat,transpose.(vertices_facet)))
-        if isposdef(quadratic_form(facet))
+        if isposdef_save(quadratic_form(facet))
             # then it intersects the interior non-trivially - make this a separate function to increase readability
             if !orbit_in_list(facet, codim_1_cells)
                 push!(codim_1_cells,facet)

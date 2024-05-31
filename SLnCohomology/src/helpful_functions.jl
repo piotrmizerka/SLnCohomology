@@ -6,15 +6,6 @@ function averaged_rep(elt_list, RG)
     return sum_//stab_order
 end
 
-# Compute the determinant of a integer matrix.
-# We don't use the built-in det function directly as it converts
-# determinants of integer matrices to floats by default 
-# and we want to work with exact numbers. Instead, we use the
-# built-in det after casting to rationals to ensure exact operations.
-function determinant(M)
-    return Int8(det([M[i,j]//1 for i in 1:size(M)[1],j in 1:size(M)[2]]))
-end
-
 # Support of Laplacians (common for all o them).
 function laplacians_support(Δ, p::Integer)
     support = []
@@ -114,7 +105,7 @@ function sl_n_p(
             i, j = div(it-1,N)+1, (it-1)%N+1
             candidate[i,j] = tuple[it]
         end
-        temp = determinant(candidate)%p
+        temp = detx(candidate)%p
         det_mod_p = (temp >= 0 ? temp : temp+p)
         if det_mod_p == 1
             push!(result,candidate)

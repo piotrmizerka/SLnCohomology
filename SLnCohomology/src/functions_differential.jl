@@ -1,3 +1,14 @@
+function r_pinv(A)
+    #=Computes the rational pseudo inverse of an integral matrix.
+    Probably slower than usual pinv, but output is rational matrix, so exact computation
+    =#
+    if !(typeof(A) == Matrix{Int64} || typeof(A) == Matrix{Rational})
+        error("The input needs to be a rational matrix")
+    end
+    r_A = Rational.(A) # make rational matrix to avoid promotion to float
+    return (r_A'*r_A)\r_A'
+end
+
 function boundaries_dict(oriented_cells_sln)
     boundaries_sln = Dict()
     for (dimension, cell_list) in oriented_cells_sln
@@ -118,9 +129,8 @@ function relative_orientation_bases(basis1,basis2)
     #= Assume that both basis1, basis2 are ordered basis of the same vector space. 
         Computes the relative orientation
     =#
-    base_change = pinv(basis1)*basis2 # matrix sending basis1 to basis2 in the corresponding subspace
-    # has no check for det=0 yet, so assumes correct input
-    if det(base_change)>0
+    base_change = r_pinv(basis1)*basis2 # matrix sending basis1 to basis2 in the corresponding subspace
+    if detx(base_change)>0
         return 1
     end
     return -1

@@ -1,14 +1,14 @@
 function isposdef_save(matrix)
     #= isposdef can display incorrect results for singular matrices. This function is a saver version.
     =#
-    if isapprox(det(matrix),0)
-        if detx(matrix) == 0 # this is an exact check
-            return false            
-        end
+    if !(typeof(matrix) == Matrix{Int64} || typeof(matrix) == Matrix{Rational})
+        error("The input needs to be a rational matrix")
+    end
+    if detx(matrix) == 0
+        return false
     else
         return isposdef(matrix)
     end
-    error("Could not decide whether the matrix is positive definite.")
 end
 
 function add_sl_n_orbits(list_of_forms)

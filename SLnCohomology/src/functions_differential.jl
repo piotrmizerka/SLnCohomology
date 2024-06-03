@@ -148,15 +148,11 @@ end
 function stabiliser_coset_SL(form1, form2)
     # Compute all elements in SL_n that send form1 to form2
     stabiliser = []
-    if round(det(form1)) !== round(det(form2)) 
-        # if they don't have the same determinant, they can't lie in the same orbit
-        # just to speed up a bit
-        return stabiliser
-    end
+    #could add a determinant check here to speed up computation if needed
     max_norm = maximum(diag(form2)) # max diagonal entry of form2 = max form1-norm of image of a vector under g
     short_vectors1 = shortestVectors(form1,max_norm)
     for g in pleskenSouvignier_two_matrices(form1,form2,short_vectors1)
-        if round(det(g)) == 1
+        if detx(g) == 1
             push!(stabiliser, g)
         end
     end

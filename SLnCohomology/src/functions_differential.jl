@@ -126,10 +126,11 @@ function quadratic_form(matrix)
 end
 
 function relative_orientation_bases(basis1,basis2)
-    #= Assume that both basis1, basis2 are ordered basis of the same vector space. 
+    #= Assume that both basis1, basis2 are ordered basis of the same vector space.
         Computes the relative orientation
     =#
-    base_change = r_pinv(basis1)*basis2 # matrix sending basis1 to basis2 in the corresponding subspace
+    base_change = r_pinv(basis1)*basis2 # matrix sending basis1 to basis2 in the corresponding subspace 
+                                        # (expressed in basis1 of that subspace)
     if detx(base_change)>0
         return 1
     end

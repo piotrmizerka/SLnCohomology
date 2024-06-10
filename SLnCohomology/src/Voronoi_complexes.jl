@@ -1,14 +1,16 @@
-function isposdef_save(matrix)
-    #= isposdef can display incorrect results for singular matrices. This function is a saver version.
+function isposdef_minors(matrix)
+    #= isposdef can display incorrect results for singular matrices. This function is an exact.
     =#
-    if !(typeof(matrix) == Matrix{Int64} || typeof(matrix) == Matrix{Rational})
-        error("The input needs to be a rational matrix")
+    @assert (typeof(matrix) == Matrix{Int64} || typeof(matrix) == Matrix{Rational}) 
+        "The input needs to be rational for exact computation."
+    @assert issymmetric(matrix) "The matrix is not symmetric!"
+    for i in 1:size(matrix)[1]
+        minor = matrix[1:i, 1:i]
+        if !(detx(minor) > 0)
+            return false
+        end
     end
-    if detx(matrix) == 0
-        return false
-    else
-        return isposdef(matrix)
-    end
+    return true
 end
 
 function add_sl_n_orbits(list_of_forms)
@@ -21,7 +23,7 @@ function add_sl_n_orbits(list_of_forms)
         for form in list_of_forms
             SL_orbit = flip*form
             # check whether its in the orbit of one of the other cells
-            if isposdef_save(SL_orbit)
+            if isposdef_minors(SL_orbit)
                 if ! orbit_in_list(SL_orbit,list_of_forms)
                     push!(list_of_forms,SL_orbit)
                 end   
@@ -108,7 +110,7 @@ function facets(polyhedral_cell, min_vectors, codim_1_cells)
         end
         #now turn into matrix again to make accessible to other calculations, orbits extract_basis
         facet = transpose(reduce(vcat,transpose.(vertices_facet)))
-        if isposdef_save(quadratic_form(facet))
+        if isposdef_minors(quadratic_form(facet))
             # then it intersects the interior non-trivially - make this a separate function to increase readability
             if !orbit_in_list(facet, codim_1_cells)
                 push!(codim_1_cells,facet)

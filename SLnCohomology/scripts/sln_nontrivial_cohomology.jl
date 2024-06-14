@@ -65,5 +65,17 @@ end
 # We use the exact rank computation from LinearAlgebraX package: https://github.com/scheinerman/LinearAlgebraX.jl
 for entry in Δ
     k = Int8(entry[1])
+
+    # Perform an additional verification of singularity for Hⁿ⁻¹.
+    # For the sake of rigorousity, this is not required, however - just a double check.
+    if k == div(n*(n-1),2)
+        kernel_vector = nullspacex(πΔ[k])[:,1]
+        for coeff in kernel_vector
+            @assert typeof(coeff) <: Rational
+        end
+        @assert πΔ[k]*kernel_vector == [0//1 for coeff in eachindex(kernel_vector)]
+    end
+
+    # Compute the exact reduced cohomology rank.
     @info "rank H^"*string(div(n*(n-1),2)+n-k-1)*" = "*string(size(πΔ[k])[1]-rankx(πΔ[k]))
 end

@@ -2,7 +2,7 @@
 
 julia_version = "1.9.4"
 manifest_format = "2.0"
-project_hash = "286adf89ac11bd7b2e5e969af34a101c53243bd5"
+project_hash = "ed458af632a2ca96e5c2c87f6119d1c7f622bc70"
 
 [[deps.AMD]]
 deps = ["LinearAlgebra", "SparseArrays", "SuiteSparse_jll"]
@@ -113,6 +113,12 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "9e2a6b69137e6969bab0152632dcb3bc108c8bdd"
 uuid = "6e34b625-4abd-537c-b88f-471c36dfa7a0"
 version = "1.0.8+1"
+
+[[deps.CDDLib]]
+deps = ["LinearAlgebra", "MathOptInterface", "Polyhedra", "SparseArrays", "cddlib_jll"]
+git-tree-sha1 = "51aa81effbae3c42c4829266288e15051a612f46"
+uuid = "3391f64e-dcde-5f30-b752-e11513730f60"
+version = "0.9.4"
 
 [[deps.COSMO]]
 deps = ["AMD", "COSMOAccelerators", "DataStructures", "IterTools", "LinearAlgebra", "MathOptInterface", "Pkg", "Printf", "QDLDL", "Random", "Reexport", "Requires", "SparseArrays", "Statistics", "SuiteSparse", "Test", "UnsafeArrays"]
@@ -1092,6 +1098,12 @@ version = "1.0.5"
 deps = ["Libdl"]
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
 version = "1.2.13+0"
+
+[[deps.cddlib_jll]]
+deps = ["Artifacts", "GMP_jll", "JLLWrappers", "Libdl"]
+git-tree-sha1 = "08f5df03703af917b9bfec47b9767eb943220d08"
+uuid = "f07e07eb-5685-515a-97c8-3014f6152feb"
+version = "0.94.14+0"
 
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl"]

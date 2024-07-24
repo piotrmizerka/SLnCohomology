@@ -2,6 +2,7 @@ module SLnCohomology
 
 using AbstractAlgebra
 using BlockArrays
+using CDDLib
 using Combinatorics
 using GAP
 using Groups

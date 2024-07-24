@@ -86,7 +86,8 @@ function create_polyhedron(cell)
     #= cell is a matrix whose columns are the minimal vectors spanning the corresponding polyhedron
     creates a polyhedron in the polyhedra package
     =#
-    lib = DefaultLibrary{Float64}(GLPK.Optimizer) # one could set different libraries here
+    # lib = DefaultLibrary{Float64}(GLPK.Optimizer) # one could set different libraries here
+    lib = CDDLib.Library(:exact)
     poly_vertices = Vector{Int64}[]
     for col in eachcol(cell)
         push!(poly_vertices,vec(quadratic_form(col)))
@@ -138,7 +139,7 @@ function Voronoi_cells(n,perfect_forms)
     =#
     dim_symmetric_space = div(n*(n+1),2)-1
     cells_SLn = Dict()
-    perfect_forms = add_sl_n_orbits(perfect_forms)
+    # perfect_forms = add_sl_n_orbits(perfect_forms)
     perfect_forms_min_vec_rep = []
     for perfect_form in perfect_forms
         # compute the minimal vectors and put them in the right format

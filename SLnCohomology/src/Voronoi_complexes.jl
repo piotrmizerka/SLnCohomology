@@ -21,11 +21,12 @@ function add_sl_n_orbits(list_of_forms)
     flip = flip_matrix(dim)
     if iseven(dim)
         for form in list_of_forms
-            SL_orbit = flip*form
+            SL_orbit = flip*form*flip
             # check whether its in the orbit of one of the other cells
             if isposdef_minors(SL_orbit)
                 if ! orbit_in_list(SL_orbit,list_of_forms)
                     push!(list_of_forms,SL_orbit)
+                    println("I added an SL_n orbit.")
                 end   
             end
         end        
@@ -139,7 +140,7 @@ function Voronoi_cells(n,perfect_forms)
     =#
     dim_symmetric_space = div(n*(n+1),2)-1
     cells_SLn = Dict()
-    # perfect_forms = add_sl_n_orbits(perfect_forms)
+    perfect_forms = add_sl_n_orbits(perfect_forms)
     perfect_forms_min_vec_rep = []
     for perfect_form in perfect_forms
         # compute the minimal vectors and put them in the right format

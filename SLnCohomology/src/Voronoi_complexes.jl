@@ -1,5 +1,6 @@
 function isposdef_minors(matrix)
-    #= isposdef can display incorrect results for singular matrices. This function is an exact.
+    #= isposdef can display incorrect results for singular matrices due to rounding errors. 
+        This function is an exact version Sylvester's criterion.
     =#
     @assert (typeof(matrix) == Matrix{Int64} || typeof(matrix) == Matrix{Rational}) 
         "The input needs to be rational for exact computation."
@@ -35,7 +36,7 @@ function add_sl_n_orbits(list_of_forms)
     return list_of_forms
 end
 
-# Returns the cells for SL(n,ℤ)
+# Returns the Voronoi cells for SL(n,ℤ)
 function cells_sln(n::Integer)
     if n == 2
         A_2 = [2 -1
@@ -106,14 +107,14 @@ function facets(polyhedral_cell, min_vectors, codim_1_cells)
     for halfspace in eachindex(halfspaces(polyhedral_cell))
         # create a list with all min_vectors that lie on this facet
         vertices_facet = []
-        for vertex in incidentpoints(polyhedral_cell, halfspace) # read out using Oscar/polymake in the long term, this might get shorter
+        for vertex in incidentpoints(polyhedral_cell, halfspace)
             vertex_index = findfirst(x -> x==vertex, vertex_list)
             push!(vertices_facet,min_vectors[vertex_index])
         end
-        #now turn into matrix again to make accessible to other calculations, orbits extract_basis
+        # now turn into matrix again to make accessible to other calculations
         facet = transpose(reduce(vcat,transpose.(vertices_facet)))
         if isposdef_minors(quadratic_form(facet))
-            # then it intersects the interior non-trivially - make this a separate function to increase readability
+            # then it intersects the interior non-trivially
             if !orbit_in_list(facet, codim_1_cells)
                 push!(codim_1_cells,facet)
             end
@@ -152,7 +153,7 @@ function Voronoi_cells(n,perfect_forms)
         println("I'm computing in dimension $dim")
         cells_SLn[dim] = []
         for cell in cells_SLn[dim+1]
-            facets_min_vectors_cell(cell,cells_SLn[dim]) # function needs better name
+            facets_min_vectors_cell(cell,cells_SLn[dim])
         end
     end
     return cells_SLn

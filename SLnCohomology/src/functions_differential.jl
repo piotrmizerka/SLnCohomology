@@ -1,6 +1,6 @@
 function r_pinv(A)
-    #=Computes the rational pseudo inverse of an integral matrix.
-    Probably slower than usual pinv, but output is rational matrix, so exact computation
+    #= Computes the rational pseudo inverse of an integral matrix.
+    Probably slower than the usual pinv function, but uses exact computations.
     =#
     if !(typeof(A) == Matrix{Int64} || typeof(A) == Matrix{Rational})
         error("The input needs to be a rational matrix")
@@ -9,12 +9,14 @@ function r_pinv(A)
     return (r_A'*r_A)\r_A'
 end
 
-function boundaries_dict(oriented_cells_sln)
+function boundaries_dict(cell_dictionary)
+    #= computes the data of the differential associated to cell_dictionary
+    =#
     boundaries_sln = Dict()
-    for (dimension, cell_list) in oriented_cells_sln
+    for (dimension, cell_list) in cell_dictionary
         boundaries_this_dimension = []
         for (cell,basis) in cell_list
-            push!(boundaries_this_dimension,boundaries_in_group_ring_with_orientation(cell,basis,dimension,oriented_cells_sln))
+            push!(boundaries_this_dimension,boundaries_in_group_ring_with_orientation(cell,basis,dimension,cell_dictionary))
         end
         boundaries_sln[dimension] = boundaries_this_dimension
     end
@@ -22,12 +24,15 @@ function boundaries_dict(oriented_cells_sln)
 end
 
 function boundaries_in_group_ring_with_orientation(cell,basis,cell_dimension,cell_dictionary)
-    #= cell dictionary should have the standard cells of the complex, together with a choice of 
+    #= computes the facets of cell; 
+        for each facet, determines whether it lies in the orbit of a cell from cell_dictionary;
+        determines all elements from SL_n(Z) sending the facet to this "standard cell".
+        cell_dictionary should have the standard cells of the complex, together with a choice of 
         orientation of each such standard cell
     =#
     boundary_cells = []
     lowest_dim = minimum(keys(cell_dictionary))
-    #Create a list of the numbers of vertices of cells in codimension 1
+    # Create a list of the numbers of vertices of cells in codimension 1
     if cell_dimension == lowest_dim
         # only trivial boundaries for cells of lowest dimension
         return boundary_cells
@@ -38,7 +43,7 @@ function boundaries_in_group_ring_with_orientation(cell,basis,cell_dimension,cel
         push!(sizes_in_codimension_1,size(codim1_cell)[2])
     end
     
-    vertices = collect(eachcol(cell)) # set of the vertices of cell
+    vertices = collect(eachcol(cell)) # set of vertices of cell
     for vertex_number in sizes_in_codimension_1
         for potential_face in Combinatorics.combinations(vertices,vertex_number)
             #look at all subsets of the vertex set that could form a cell in codimension 1
@@ -50,7 +55,7 @@ function boundaries_in_group_ring_with_orientation(cell,basis,cell_dimension,cel
             end
             basis_face = extract_basis(forms_face)
 
-            # Now find out whether it's in the orbit of a standard cell in codimension 1
+            # Now find out whether it is in the orbit of a standard cell in codimension 1
             for cell_index in 1:length(cell_dictionary[cell_dimension-1])
                 # check in the list of codimension 1 cells which orbit we have
                 (standard_cell,standard_basis) = cell_dictionary[cell_dimension-1][cell_index]
@@ -65,7 +70,7 @@ function boundaries_in_group_ring_with_orientation(cell,basis,cell_dimension,cel
                                 break
                             end
                         end
-                        sign = relative_orientation_bases(basis, extended_basis) #this is epsilon(tau',sigma) in Elbaz et al
+                        sign = relative_orientation_bases(basis, extended_basis) #this is epsilon(tau',sigma)
                         boundary_information = Dict()
                         boundary_information["sign"] = sign
                         boundary_information["orbit_standard_cell"] = cell_index
@@ -81,12 +86,12 @@ function boundaries_in_group_ring_with_orientation(cell,basis,cell_dimension,cel
 end
 
 function extract_basis(list_of_vectors)
-    #= Picks a linearly independent subset of list_of_vectors (required to be integer or rational)
+    #= Picks a linearly independent subset of list_of_vectors (required to be integral or rational)
     =#
     partial_basis = hcat(list_of_vectors[1])
-    for vector in list_of_vectors # bit wasteful to check first element again
+    for vector in list_of_vectors # slightly wasteful to check first element again
         potential_partial_basis = hcat(partial_basis,vector)
-        if rankx(potential_partial_basis)> rankx(partial_basis)
+        if rankx(potential_partial_basis) > rankx(partial_basis)
             partial_basis = potential_partial_basis
         end
     end
@@ -104,29 +109,33 @@ function orbit_in_list(matrix,list)
     return false
 end
 
-function oriented_cells_dict(cells_sln)
-    oriented_cells_sln = Dict()
-    for dimension in keys(cells_sln)
-        oriented_cells_sln[dimension] = []
-        for cell in cells_sln[dimension]
+function oriented_cells_dict(unoriented_cell_dictionary)
+    #= adds an orientation to every cell in unoriented_cell_dictionary
+    =#
+    cell_dictionary = Dict()
+    for dimension in keys(unoriented_cell_dictionary)
+        cell_dictionary[dimension] = []
+        for cell in unoriented_cell_dictionary[dimension]
             forms_cell = []
-            #first convert into vectors (could be combined with below, but easier like this for now)
             for minimal_vector in eachcol(cell)
                 push!(forms_cell, vec(quadratic_form(minimal_vector)))
             end
             basis = extract_basis(forms_cell)
-            push!(oriented_cells_sln[dimension],(cell,basis))
+            push!(cell_dictionary[dimension],(cell,basis))
         end
     end
-    return oriented_cells_sln   
+    return cell_dictionary   
 end
 
 function quadratic_form(matrix)
+    #= Determines the quadratic form given by the sum of the rank-1 forms associated to each
+        column of matrix.
+    =#
     return matrix*transpose(matrix)
 end
 
 function relative_orientation_bases(basis1,basis2)
-    #= Assume that both basis1, basis2 are ordered basis of the same vector space.
+    #= Assumes that both basis1, basis2 are ordered basis of the same vector space.
         Computes the relative orientation
     =#
     base_change = r_pinv(basis1)*basis2 # matrix sending basis1 to basis2 in the corresponding subspace 
@@ -147,9 +156,10 @@ function same_orbit(matrix1,matrix2)
 end
 
 function stabiliser_coset_SL(form1, form2)
-    # Compute all elements in SL_n that send form1 to form2
+    #=  Computes all elements in SL_n that send form1 to form2
+    =#
     stabiliser = []
-    #could add a determinant check here to speed up computation if needed
+    # could add a determinant check here to speed up computation if needed
     max_norm = maximum(diag(form2)) # max diagonal entry of form2 = max form1-norm of image of a vector under g
     short_vectors1 = shortestVectors(form1,max_norm)
     for g in pleskenSouvignier_two_matrices(form1,form2,short_vectors1)
@@ -164,14 +174,14 @@ function stabiliser_coset_with_orientation((matrix1,oriented_basis1), (matrix2,o
     #= 
     matrix1, matrix2 integer matrix whose columns form a basis of the lattice.
     oriented_basis1 an orientation of the form associated to matrix1, oriented_basis2 same for matrix2
-    Returns all (g,orientation) such that g\in SL_dimension(Z) sends the quadratic form associated to matrix1 to 
+    Returns all (g,orientation) such that g\in SL_n(Z) sends the quadratic form associated to matrix1 to 
     the one associated to matrix 2 and orientation is the relative orientation of the corresponding oriented cells
     =#
     n = size(matrix1)[1]
     elements = []
     for g in stabiliser_coset_SL(quadratic_form(matrix1), quadratic_form(matrix2))
         # these are the elements in the stabiliser
-        # now need to determine the orientation
+        # now determine the orientation
         # first compute what g does with oriented_basis1
         g_basis1 = Array{Int64}(undef, n*n, 0) # an n^2x0 matrix, to be filled with the basis
         for column in eachcol(oriented_basis1)
@@ -184,11 +194,13 @@ function stabiliser_coset_with_orientation((matrix1,oriented_basis1), (matrix2,o
     return elements
 end
 
-function stabilisers_dict(oriented_cells_sln)
-    stabilisers_sln = Dict()
-    for dimension in keys(oriented_cells_sln)
+function stabilisers_dict(cell_dictionary)
+    #= Computes the stabilisers of the cells in cell_dictionary
+    =#
+    stabilisers = Dict()
+    for dimension in keys(cell_dictionary)
         println("Dimension $dimension")
-        cell_list = oriented_cells_sln[dimension]
+        cell_list = cell_dictionary[dimension]
         stabilisers_this_dimension = []
         cell_count = 0
         for (cell,basis) in cell_list
@@ -200,7 +212,7 @@ function stabilisers_dict(oriented_cells_sln)
             end
             push!(stabilisers_this_dimension,cell_stabiliser)
         end
-        stabilisers_sln[dimension] = stabilisers_this_dimension
+        stabilisers[dimension] = stabilisers_this_dimension
     end
-    return stabilisers_sln
+    return stabilisers
 end

@@ -6,7 +6,7 @@ function averaged_rep(elt_list, RG)
     return sum_//stab_order
 end
 
-# Support of Laplacians (common for all o them).
+# Support of Laplacians (common for all of them).
 function laplacians_support(Δ, p::Integer)
     support = []
     for entry in Δ

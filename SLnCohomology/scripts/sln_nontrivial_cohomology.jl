@@ -22,9 +22,6 @@ p = (n == 3 ? 3 : 2)
 
 sln_laplacian_data = deserialize(joinpath(@__DIR__, "./laplacians_computation/precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"))
 Δ = sln_laplacian_data["laplacians"]
-if n == 4 # don't consider 1st cohomology for SL(4,Z) since one of the cells was not simplicial
-    delete!(Δ,8)
-end
 
 @info "Laplacians loaded"
 

@@ -2,7 +2,6 @@
 cohomology_ranks_sl_2 = Dict(0=>1, 1=>0)
 cohomology_ranks_sl_3 = Dict(0=>1, 1=>0, 2=>0, 3=>0)
 cohomology_ranks_sl_4 = Dict(0=>1, 1=>0, 2=>0, 3=>1, 4=>0, 5=>0, 6=>0)
-cohomology_ranks_sl_5 = Dict(0=>1, 1=>0, 2=>0, 3=>0, 4=>0, 5=>0, 6=>1, 7=>0, 8=>0, 9=>0, 10=>0)
 
 function coh_trivial_rep(N)
     # Load Laplacian

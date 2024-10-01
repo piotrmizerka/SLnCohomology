@@ -21,7 +21,3 @@ end
 @testset "sl4_cell_data" begin
     test_cell_data(4)
 end
-
-@testset "sl5_cell_data" begin
-    test_cell_data(5)
-end

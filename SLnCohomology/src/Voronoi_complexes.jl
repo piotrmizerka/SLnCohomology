@@ -59,26 +59,6 @@ function cells_sln(n::Integer)
                0 0 -1 2]
 
         forms = [D_4, A_4]
-    elseif n == 5
-        D_5 = [2 0 1 0 0
-               0 2 -1 0 0
-               1 -1 2 -1 0
-               0 0 -1 2 -1
-               0 0 0 -1 2]
-
-        A_5_plus3 = [6 -3 0 0 0
-                     -3 6 -3 0 3
-                     0 -3 6 -3 0
-                     0 0 -3 6 0
-                     0 3 0 0 4]
-
-        A_5 = [2 -1 0 0 0
-               -1 2 -1 0 0
-               0 -1 2 -1 0
-               0 0 -1 2 -1
-               0 0 0 -1 2]
-
-        forms = [D_5, A_5_plus3, A_5]
     end
 
     return SLnCohomology.Voronoi_cells(n,forms)

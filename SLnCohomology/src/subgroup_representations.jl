@@ -32,6 +32,16 @@ function flip_permutation_representation(
         x2 = matrix_mod_p(x^2, p)
         yx = matrix_mod_p(y*x, p)
         yx2 = matrix_mod_p(y*x^2, p)
+        x3 = matrix_mod_p(x^3, p)
+        y2 = matrix_mod_p(y^2, p)
+
+        # check whether the quotient is isomorphic to D₆
+        @assert elt_coset_labels[id_] == elt_coset_labels[x3] == elt_coset_labels[y2]
+        @assert elt_coset_labels[x2] == elt_coset_labels[y*x*y]
+        x_y_reps = Set([elt_coset_labels[id_],elt_coset_labels[x],elt_coset_labels[x2],
+                       [elt_coset_labels[y],elt_coset_labels[yx],elt_coset_labels[yx2]]])
+        @assert length(x_y_reps) == length(elt_coset_labels) == 6
+
         for h in H
             if elt_coset_labels[h] == elt_coset_labels[id_]
                 subgroup_rep[h] = Matrix(Permutations.Permutation([[1],[2],[3]]))
@@ -69,7 +79,7 @@ function subgroup_from_gens(
     gens_,
     p::Integer
 )
-    result = Dict(x => [x] for x in gens_)
+    # result = Dict(x => [x] for x in gens_)
     I_n = Matrix(UniformScaling(Int8(1)),size(first(gens_))[1],size(first(gens_))[1])
     result = [I_n]
     while true

@@ -70,7 +70,7 @@ function boundaries_in_group_ring_with_orientation(cell,basis,cell_dimension,cel
                                 break
                             end
                         end
-                        sign = relative_orientation_bases(basis, extended_basis) #this is epsilon(tau',sigma)
+                        sign = relative_orientation_bases(basis, extended_basis) #this is eta(tau',sigma,1)
                         boundary_information = Dict()
                         boundary_information["sign"] = sign
                         boundary_information["orbit_standard_cell"] = cell_index
@@ -188,7 +188,7 @@ function stabiliser_coset_with_orientation((matrix1,oriented_basis1), (matrix2,o
             g_basis1 = hcat(g_basis1,vec(transpose(g)*reshape(column,(n,n))*g))
         end
         orientation = relative_orientation_bases(g_basis1,oriented_basis2)
-        # this is the relative orientation of g.first cell compared to second cell
+        # this is eta(cell1, cell2, g), the relative orientation of cell1.g compared to cell2
         push!(elements, (g,orientation))
     end
     return elements

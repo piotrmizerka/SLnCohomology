@@ -11,7 +11,7 @@ For the computations we used Julia in version `1.9.4` but in principle any later
 ## Obtaining code
 In order to get the replication code, either download it directly from [Zenodo](TO FILL), or issue the following command in the terminal (note that git must be installed in this case)
 ```bash
-git clone https://github.com/dawidkielak/HigherTSL3
+git clone https://github.com/piotrmizerka/SLnCohomology
 ```
 
 ## Setting up the environment
@@ -31,7 +31,7 @@ In order to replicate the computations for $\text{SL}_n(\mathbb{Z})$ using the p
 julia --project=. ./scripts/sln_nontrivial_cohomology.jl n
 ```
 
-The running time of the script will be approximately `3` and `8` minutes on a standard laptop computer for the cases $n=2$ and $n=3$ respectively.
+The running time of the script will be approximately `3` and `8` minutes on a standard laptop computer for the cases $n=3$ and $n=4$ respectively.
 
 To run the script which recomputes the Laplacians, saving them in [laplacians_computations](./scripts/laplacians_computation) directory, run the following command in the terminal in the `SLnCohomology` folder
 ```bash

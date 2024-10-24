@@ -35,6 +35,6 @@ The running time of the script will be approximately `3` and `8` minutes on a st
 
 To run the script which recomputes the Laplacians, saving them in [laplacians_computations](./scripts/laplacians_computation) directory, run the following command in the terminal in the `SLnCohomology` folder
 ```bash
-julia --project=. ./scripts/sln_laplacians.jl n
+julia --project=. ./scripts/laplacians_computation/sln_laplacians.jl n
 ```
 Caution: for $n=4$, the running time of the above script may take a few hours and the sufficient amount of RAM memory is recommended (probably about 32GB).

@@ -37,10 +37,10 @@ function flip_permutation_representation(
 
         # check whether the quotient is isomorphic to D₆
         @assert elt_coset_labels[id_] == elt_coset_labels[x3] == elt_coset_labels[y2]
-        @assert elt_coset_labels[x2] == elt_coset_labels[y*x*y]
+        @assert elt_coset_labels[x2] == elt_coset_labels[matrix_mod_p(y*x*y,p)]
         x_y_reps = Set([elt_coset_labels[id_],elt_coset_labels[x],elt_coset_labels[x2],
-                       [elt_coset_labels[y],elt_coset_labels[yx],elt_coset_labels[yx2]]])
-        @assert length(x_y_reps) == length(elt_coset_labels) == 6
+                        elt_coset_labels[y],elt_coset_labels[yx],elt_coset_labels[yx2]])
+        @assert length(x_y_reps) == 6
 
         for h in H
             if elt_coset_labels[h] == elt_coset_labels[id_]

@@ -116,23 +116,12 @@ for k in homology_degrees
 end
 
 # Compute the Laplacians.
-# At the end, we embed the Laplacian into RG_star, the group ring
-# with the same basis as RG but with twisted multiplciation, i.e.
-# (1+g)(1+h)=1+g+h+g^(-1)h. This is needed to translate hermitian squares
-# to the standard ones for the definition of the semi-definite optimization problem
-# (solvers prefer standard squares to hermitian :)).
-# This has no effect on the shape of the Laplacian since we just embed it.
-RG_Δ_star = Dict()
-for k in homology_degrees
-    RG_Δ_star[k] = LowCohomologySOS.group_ring(sln, half_basis_Δ[k], star_multiplication = true)
-end
 Δ = Dict()
 for pair in consecutive_differential_degrees
     k = pair[1]
     d_k = LowCohomologySOS.embed.(identity, d[k], Ref(RG_Δ[k]))
     d_k_plus_1 = LowCohomologySOS.embed.(identity, d[k+1], Ref(RG_Δ[k]))
     Δ[k] = d_k'*d_k+d_k_plus_1*d_k_plus_1'+stab_part_dim[k]
-    Δ[k] = LowCohomologySOS.embed.(identity, Δ[k], Ref(RG_Δ_star[k]))
 end
 if homology_degrees[1] == differential_degrees[1]
     kx = homology_degrees[1]

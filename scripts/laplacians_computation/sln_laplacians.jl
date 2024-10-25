@@ -10,7 +10,7 @@ using Serialization
 using SLnCohomology
 
 # The degree of SLₙ(ℤ)
-n = parse(Int64, ARGS[1])
+n = parse(Int64, ARGS[1]) # add the lsit of Laplacian degreess we want to compute as a parameter
 
 # The boundary and stabiliser data
 cells_sln = SLnCohomology.cells_sln(n)
@@ -56,24 +56,16 @@ for k in differential_degrees[3:end]
 end
 
 # Compute the group rings (with standard multiplciation by convolution: (1+g)(1+h)=1+g+h+gh)
-# We consider only those Laplacians with reasonable size size of half_basis for their
-# group rings. For now, we allow half_bases with at most 11_500 elements, which leaves
-# cohomologies of degree: 1, 2, 3, 4, and 5, of which 4 and 5 remain interesting
-# as we have vanishing for 1, 2, 3 from Bader-Sauer.
 homology_degrees = []
 for k in differential_degrees[1:end-1]
-    if length(half_basis_Δ[k]) <= 11_500
-        push!(homology_degrees,k)
-    end
+    push!(homology_degrees,k)
 end
 RG_Δ = Dict()
 for k in homology_degrees
-    RG_Δ[k] = LowCohomologySOS.group_ring(
-        sln, half_basis_Δ[k], star_multiplication = false
-    )
+    RG_Δ[k] = LowCohomologySOS.group_ring(sln, half_basis_Δ[k])
 end
 
-# Compute the differential as matrices over RGs.
+# Compute the differentials as matrices over RGs.
 # We store them as matrices over Rationals to perform exact operations.
 cells_number = Dict(k=>length(stabilisers[k]) for k in differential_degrees)
 dx = Dict([(k+1,i,j) => 0//1*zero(RG_Δ[k]) for k in homology_degrees for i in 1:cells_number[k] for j in 1:cells_number[k+1]])
@@ -121,12 +113,12 @@ for pair in consecutive_differential_degrees
     k = pair[1]
     d_k = LowCohomologySOS.embed.(identity, d[k], Ref(RG_Δ[k]))
     d_k_plus_1 = LowCohomologySOS.embed.(identity, d[k+1], Ref(RG_Δ[k]))
-    Δ[k] = d_k'*d_k+d_k_plus_1*d_k_plus_1'+stab_part_dim[k]
+    Δ[k] = copy(d_k')*d_k+d_k_plus_1*copy(d_k_plus_1')+stab_part_dim[k]
 end
 if homology_degrees[1] == differential_degrees[1]
     kx = homology_degrees[1]
     d_kx_plus_1 = LowCohomologySOS.embed.(identity, d[kx+1], Ref(RG_Δ[kx]))
-    Δ[kx] = d_kx_plus_1*d_kx_plus_1'+stab_part_dim[kx]
+    Δ[kx] = d_kx_plus_1*copy(d_kx_plus_1')+stab_part_dim[kx]
 end
 if homology_degrees[end] == differential_degrees[end]-1
     kx = differential_degrees[end]
@@ -137,7 +129,7 @@ if homology_degrees[end] == differential_degrees[end]-1
             ) 
         for i in 1:cells_number[kx],j in 1:cells_number[kx]
     ]
-    Δ[kx] = d_kx'*d_kx+stab_part_dim[kx]
+    Δ[kx] = copy(d_kx')*d_kx+stab_part_dim[kx]
     push!(homology_degrees,kx)
 end
 

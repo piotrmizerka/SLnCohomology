@@ -11,6 +11,7 @@ using SLnCohomology
 
 # The degree of SLₙ(ℤ)
 n = parse(Int64, ARGS[1]) # add the lsit of Laplacian degreess we want to compute as a parameter
+demanded_degrees = [parse(Int64, ARGS[i]) for i in 2:length(ARGS)]
 
 # The boundary and stabiliser data
 cells_sln = SLnCohomology.cells_sln(n)
@@ -20,11 +21,17 @@ stabilisers = SLnCohomology.stabilisers_dict(oriented_cells_sln)
 
 # Extract homology degrees
 differential_degrees = sort([first(x) for x in boundaries])
+relevant_degrees = []
+for degree in differential_degrees
+    if (degree in demanded_degrees)||(degree-1 in demanded_degrees)
+        push!(relevant_degrees, degree)
+    end
+end
 
 # Compute the stabilisers as signed subgroups of SL(n,ℤ)
 m_stabs = Dict()
 sln = MatrixGroups.SpecialLinearGroup{n}(Int8)
-for k in differential_degrees
+for k in relevant_degrees
     m_stabs[k] = [
         [(SLnCohomology.gelt_from_matrix(M,sln),σ) for (M,σ) in stab] for stab in stabilisers[k]
     ]
@@ -32,8 +39,8 @@ end
 
 # Compute the supports (i.e. half_bases) for the group rings to compute the Laplacians
 # - we just add to half_basis the coset elements appearing in the differentials.
-d_union = Dict(k=>[one(sln)] for k in differential_degrees[2:end])
-for k in differential_degrees[2:end]
+d_union = Dict(k=>[one(sln)] for k in relevant_degrees[2:end])
+for k in relevant_degrees[2:end]
     for i in eachindex(boundaries[k])
         for j in eachindex(boundaries[k][i])
             coset = boundaries[k][i][j]["orbit_coset_with_orientation"]
@@ -45,19 +52,19 @@ for k in differential_degrees[2:end]
     end
 end
 half_basis_Δ = Dict()
-min_degree = differential_degrees[1]
+min_degree = relevant_degrees[1]
 half_basis_Δ[min_degree] = d_union[min_degree+1]
 half_basis_Δ[min_degree] = unique(
     [half_basis_Δ[min_degree];inv.(half_basis_Δ[min_degree])]
 )
-for k in differential_degrees[3:end]
+for k in relevant_degrees[3:end]
     half_basis_Δ[k-1] = union(d_union[k-1], d_union[k])
     half_basis_Δ[k-1] = unique([half_basis_Δ[k-1];inv.(half_basis_Δ[k-1])])
 end
 
 # Compute the group rings (with standard multiplciation by convolution: (1+g)(1+h)=1+g+h+gh)
 homology_degrees = []
-for k in differential_degrees[1:end-1]
+for k in relevant_degrees[1:end-1]
     push!(homology_degrees,k)
 end
 RG_Δ = Dict()
@@ -67,7 +74,7 @@ end
 
 # Compute the differentials as matrices over RGs.
 # We store them as matrices over Rationals to perform exact operations.
-cells_number = Dict(k=>length(stabilisers[k]) for k in differential_degrees)
+cells_number = Dict(k=>length(stabilisers[k]) for k in relevant_degrees)
 dx = Dict([(k+1,i,j) => 0//1*zero(RG_Δ[k]) for k in homology_degrees for i in 1:cells_number[k] for j in 1:cells_number[k+1]])
 for k in homology_degrees
     for j in eachindex(boundaries[k+1])
@@ -115,13 +122,13 @@ for pair in consecutive_differential_degrees
     d_k_plus_1 = LowCohomologySOS.embed.(identity, d[k+1], Ref(RG_Δ[k]))
     Δ[k] = copy(d_k')*d_k+d_k_plus_1*copy(d_k_plus_1')+stab_part_dim[k]
 end
-if homology_degrees[1] == differential_degrees[1]
+if homology_degrees[1] == relevant_degrees[1]
     kx = homology_degrees[1]
     d_kx_plus_1 = LowCohomologySOS.embed.(identity, d[kx+1], Ref(RG_Δ[kx]))
     Δ[kx] = d_kx_plus_1*copy(d_kx_plus_1')+stab_part_dim[kx]
 end
-if homology_degrees[end] == differential_degrees[end]-1
-    kx = differential_degrees[end]
+if homology_degrees[end] == relevant_degrees[end]-1
+    kx = relevant_degrees[end]
     d_kx = LowCohomologySOS.embed.(identity, d[kx], Ref(RG_Δ[kx-1]))
     stab_part_dim[kx] = [
         i == j ? one(RG_Δ[kx-1])-SLnCohomology.averaged_rep(
@@ -141,5 +148,5 @@ end
 # Save the Laplacians in a serialized form in a file.
 laplacian_data = Dict()
 laplacian_data["laplacians"] = Δ
-laplacian_data["differential_degrees"] = differential_degrees
+laplacian_data["differential_degrees"] = relevant_degrees
 serialize(joinpath(@__DIR__, "./precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"), laplacian_data)

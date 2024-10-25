@@ -6,7 +6,25 @@ One can express the rank of the cohomology groups as the rank of specific Laplac
 
 To ensure mathematical rigour, the matrices representing the Laplacians evaluated for particular representations are rationally-valued. For the same reason, we use the package [LinearAlgebraX](https://github.com/scheinerman/LinearAlgebraX.jl) which provides a function to compute the rank of rationally-valued matrices exactly.
 
-For the computations we used Julia in version `1.9.4` but in principle any later version should work. On a Windows operating system, please use the [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about).
+For the computations we used Julia in version `1.9.4`. On a Windows operating system, please use the [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about).
+
+## Getting Julia 1.9.4
+
+In order to recompute the Laplacians, you need to use Julia in version `1.9.4`. (If you want to use the precomputed Laplacians that we provide in this repository, any later Julia version should work as well.)
+
+To get the correct Julia version, first install [Juliaup](https://github.com/JuliaLang/juliaup), a cross-platform installer for Julia. 
+
+After installing Juliaup, install Julia in version `1.9.4` by running
+
+```bash
+juliaup add 1.9.4
+```
+
+Run the following command to make version `1.9.4` the default version.
+
+```bash
+juliaup default 1.9.4
+```
 
 ## Obtaining the code
 In order to get the replication code, either download it directly from [Zenodo](TO FILL), or issue the following command in the terminal (note that git must be installed in this case)
@@ -21,7 +39,7 @@ julia --project=.
 ```
 Next, to set up the proper environment for the replication run in Julia REPL the following
 ```julia
-Pkg; Pkg.instantiate()
+using Pkg; Pkg.instantiate()
 ```
 Remark: this step needs to be executed only once per installation.
 

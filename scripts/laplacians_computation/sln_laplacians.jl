@@ -133,6 +133,8 @@ for k in reasonable_demanded_degrees
     # The above also verifies that the stabilisers' elements belong to the half bases.
 end
 
+# LEt's add a test saying that x^*x = x for x =  one(RG_Δ[k])-SLnCohomology.averaged_rep(m_stabs[i],RG_Δ[k]) : zero(zero(RG_Δ[k]))
+
 # Compute the Laplacians. (Currently in `meta code' -- to be corrected, as in line 141)
 Δ = Dict()
 for k in reasonable_demanded_degrees

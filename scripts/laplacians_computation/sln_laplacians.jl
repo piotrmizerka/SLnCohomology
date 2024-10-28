@@ -42,7 +42,7 @@ for degree in cell_degrees
 end
 relevant_degrees_group_ring = [] # we need the group rings in one degree higher, as the images of the adjoints
 for degree in cell_degrees
-    if (degree in reasonable_demanded_degrees)||(degree+1 in reasonable_demanded_degrees)
+    if (degree in reasonable_demanded_degrees)||(degree-1 in reasonable_demanded_degrees)||(degree+1 in reasonable_demanded_degrees)
         push!(relevant_degrees_group_ring, degree)
     end
 end
@@ -59,7 +59,7 @@ end
 # Compute the supports (i.e. half_bases) for the group rings to compute the Laplacians
 # - we just add to half_basis the coset elements appearing in the differentials.
 d_union = Dict(k=>[one(sln)] for k in cell_degrees)
-for k in cell_degrees # strictly speaking not need for all cell_degrees, but quick computation
+for k in relevant_degrees_group_ring
     if !(k == min_degree) # in min_degree, all boundaries are trivial, so nothing needs to be added
         for i in eachindex(boundaries[k])
             for j in eachindex(boundaries[k][i])
@@ -73,7 +73,7 @@ for k in cell_degrees # strictly speaking not need for all cell_degrees, but qui
     end
 end
 half_basis_Δ = Dict()
-for k in cell_degrees
+for k in relevant_degrees_group_ring
     if k == max_degree
         half_basis_Δ[k] = d_union[k]
         half_basis_Δ[k] = unique([half_basis_Δ[k];inv.(half_basis_Δ[k])])
@@ -85,8 +85,9 @@ end
 
 # Compute the group rings (with standard multiplication by convolution: (1+g)(1+h)=1+g+h+gh)
 RG_Δ = Dict()
-for k in cell_degrees
+for k in relevant_degrees_group_ring
     RG_Δ[k] = LowCohomologySOS.group_ring(sln, half_basis_Δ[k])
+    @info "Computed group ring support in degree $k"
 end
 
 # Compute the differentials as matrices over RGs.

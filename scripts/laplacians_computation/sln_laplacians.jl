@@ -158,7 +158,4 @@ for entry in Δ
 end
 
 # Save the Laplacians in a serialized form in a file.
-laplacian_data = Dict()
-laplacian_data["laplacians"] = Δ
-laplacian_data["differential_degrees"] = reasonable_demanded_degrees
-serialize(joinpath(@__DIR__, "./precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"), laplacian_data)
+serialize(joinpath(@__DIR__, "./precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"), Δ)

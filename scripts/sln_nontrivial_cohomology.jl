@@ -20,8 +20,7 @@ using SparseArrays
 n = parse(Int64, ARGS[1])
 p = (n == 3 ? 3 : 2)
 
-sln_laplacian_data = deserialize(joinpath(@__DIR__, "./laplacians_computation/precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"))
-Δ = sln_laplacian_data["laplacians"]
+Δ = deserialize(joinpath(@__DIR__, "./laplacians_computation/precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"))
 
 @info "Laplacians loaded"
 

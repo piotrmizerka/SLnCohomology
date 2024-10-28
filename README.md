@@ -51,3 +51,6 @@ julia +1.9.4 --project=. ./scripts/sln_nontrivial_cohomology.jl n
 ```
 
 The running time of the script will be approximately `3` and `8` minutes on a standard laptop computer for the cases $n=3$ and $n=4$ respectively.
+
+There is also a possibility to run all the necessary operations in the [Jupyter notebook](./sln_non_trivial_cohomology.ipynb). The notebook contains procedures for $n=3,4$ and the homology degrees equal to $3$ and $6$ respectively (they correspond to the cohomologies of degrees $2$ and $3$ for $n=3$ and $n=4$).
+

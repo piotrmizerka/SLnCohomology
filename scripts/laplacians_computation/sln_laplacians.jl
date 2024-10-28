@@ -155,4 +155,4 @@ for entry in Δ
 end
 
 # Save the Laplacians in a serialized form in a file.
-serialize(joinpath(@__DIR__, "scripts/laplacians_computation/precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"), Δ)
+serialize(joinpath(@__DIR__, "precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"), Δ)

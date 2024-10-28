@@ -133,12 +133,12 @@ for k in reasonable_demanded_degrees
     # The above also verifies that the stabilisers' elements belong to the half bases.
 end
 
-# Compute the Laplacians.
+# Compute the Laplacians. (Currently in `meta code' -- to be corrected, as in line 141)
 Δ = Dict()
 for k in reasonable_demanded_degrees
     if k == min_degree
         d_k_plus_1 = LowCohomologySOS.embed.(identity, d[k+1], Ref(RG_Δ[k]))
-        Δ[k] = d_k_plus_1*copy(d_k_plus_1')+stab_part_dim[k]
+        Δ[k] = d_k_plus_1*copy(d_k_plus_1')*[ID - stab_part_dim[k]] +stab_part_dim[k]
     elseif k == max_degree
         d_k = LowCohomologySOS.embed.(identity, d[k], Ref(RG_Δ[k]))
         Δ[k] = copy(d_k')*d_k+stab_part_dim[k]

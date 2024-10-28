@@ -14,6 +14,8 @@ n = parse(Int64, ARGS[1])
 # The degrees of the Laplacian that the user wants to compute
 user_demanded_degrees = [parse(Int64, ARGS[i]) for i in 2:length(ARGS)]
 
+sln = MatrixGroups.SpecialLinearGroup{n}(Int8)
+
 # The boundary and stabiliser data
 cells_sln = SLnCohomology.cells_sln(n)
 oriented_cells_sln = SLnCohomology.oriented_cells_dict(cells_sln)
@@ -45,15 +47,6 @@ for degree in cell_degrees
     if (degree in reasonable_demanded_degrees)||(degree-1 in reasonable_demanded_degrees)||(degree+1 in reasonable_demanded_degrees)
         push!(relevant_degrees_group_ring, degree)
     end
-end
-
-# Convert the stabilisers to signed subgroups of SL(n,ℤ)
-m_stabs = Dict()
-sln = MatrixGroups.SpecialLinearGroup{n}(Int8)
-for k in reasonable_demanded_degrees
-    m_stabs[k] = [
-        [(SLnCohomology.gelt_from_matrix(M,sln),eta) for (M,eta) in stab] for stab in stabilisers[k]
-    ]
 end
 
 # Compute the supports (i.e. half_bases) for the group rings to compute the Laplacians
@@ -127,13 +120,17 @@ for pair in consecutive_relevant_degrees
 end
 
 # The stabiliser parts which we have to add to get free modules.
-# Hopefully the stabilisers' elements belong to the half bases.
+# Convert the stabilisers to signed subgroups of SL(n,ℤ)
 stab_part_dim = Dict()
 for k in reasonable_demanded_degrees
+    m_stabs = [
+        [(SLnCohomology.gelt_from_matrix(M,sln),eta) for (M,eta) in stab] for stab in stabilisers[k]
+    ]
     stab_part_dim[k] = [
-        i == j ? one(RG_Δ[k])-SLnCohomology.averaged_rep(m_stabs[k][i],RG_Δ[k]) : zero(zero(RG_Δ[k])) 
+        i == j ? one(RG_Δ[k])-SLnCohomology.averaged_rep(m_stabs[i],RG_Δ[k]) : zero(zero(RG_Δ[k])) 
         for i in 1:cells_number[k],j in 1:cells_number[k]
     ]
+    # The above also verifies that the stabilisers' elements belong to the half bases.
 end
 
 # Compute the Laplacians.

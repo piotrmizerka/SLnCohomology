@@ -63,7 +63,7 @@ for entry in Δ
     k = Int8(entry[1])
 
     # Perform an additional verification of singularity for Hⁿ⁻¹.
-    # For the sake of rigorousity, this is not required, however - just a double check.
+    # For the sake of rigour, this is not required, however - just a double check.
     if k == div(n*(n-1),2)
         kernel_vector = nullspacex(πΔ[k])[:,1]
         for coeff in kernel_vector

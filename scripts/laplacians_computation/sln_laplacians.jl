@@ -33,7 +33,7 @@ m_stabs = Dict()
 sln = MatrixGroups.SpecialLinearGroup{n}(Int8)
 for k in relevant_degrees
     m_stabs[k] = [
-        [(SLnCohomology.gelt_from_matrix(M,sln),σ) for (M,σ) in stab] for stab in stabilisers[k]
+        [(SLnCohomology.gelt_from_matrix(M,sln),eta) for (M,eta) in stab] for stab in stabilisers[k]
     ]
 end
 
@@ -46,7 +46,7 @@ for k in relevant_degrees[2:end]
             coset = boundaries[k][i][j]["orbit_coset_with_orientation"]
             d_union[k] = union(
                 d_union[k], 
-                [SLnCohomology.gelt_from_matrix(M,sln) for (M,σ) in coset]
+                [SLnCohomology.gelt_from_matrix(M,sln) for (M,eta) in coset]
             )
         end
     end
@@ -77,11 +77,14 @@ end
 cells_number = Dict(k=>length(stabilisers[k]) for k in relevant_degrees)
 dx = Dict([(k+1,i,j) => 0//1*zero(RG_Δ[k]) for k in homology_degrees for i in 1:cells_number[k] for j in 1:cells_number[k+1]])
 for k in homology_degrees
-    for j in eachindex(boundaries[k+1])
-        for summand in boundaries[k+1][j]
-            coset_orient = [(SLnCohomology.gelt_from_matrix(M,sln),σ) for (M,σ) in summand["orbit_coset_with_orientation"]]
-            summand_in_RG = summand["sign"]*SLnCohomology.averaged_rep(coset_orient,RG_Δ[k])
-            dx[k+1,summand["orbit_standard_cell"],j] += summand_in_RG
+    for j in eachindex(boundaries[k+1]) # each j corresponds to a (k+1)-cell sigma
+        for tauprime in boundaries[k+1][j] # each tau' is a facet of sigma
+            coset_orient = [(SLnCohomology.gelt_from_matrix(M,sln),eta) for (M,eta) in tauprime["orbit_coset_with_orientation"]]
+            # coset_orient is G(tau,tau'); gelt_from_matrix(M,sln) is an element g sending tau to tau', eta is eta(tau,tau',g)
+            summand_in_RG = tauprime["sign"]*SLnCohomology.averaged_rep(coset_orient,RG_Δ[k]) 
+            # summand_in_RG is x_{tau'}; tauprime["sign"] is eta(tau',sigma,1)
+            dx[k+1,tauprime["orbit_standard_cell"],j] += summand_in_RG 
+            # dx[k+1,tauprime["orbit_standard_cell"],j] is partial_{sigma,tau}; tauprime["orbit_standard_cell"] is tau
         end
     end
 end

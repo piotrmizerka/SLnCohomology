@@ -38,7 +38,7 @@ using Pkg; Pkg.instantiate()
 Remark: this step needs to be executed only once per installation.
 
 ## Running the actual replication
-First compute the Laplacian in the relevant degrees. For this, run the following command in the terminal in the `SLnCohomology` folder, replacing $(n,degree)$ by $(3,3)$ or $(4,6)$.
+First compute the Laplacian in the relevant degrees. For this, run the following command in the terminal in the `SLnCohomology` folder, replacing $n degree$ by $3 3$ or $4 6$.
 ```bash
 julia +1.9.4 --project=. ./scripts/laplacians_computation/sln_laplacians.jl n degree
 ```

@@ -1,3 +1,4 @@
 /scripts/laplacians_computation/precomputed_laplacians/*
 Manifest.toml
 Project.toml
+.DS_Store

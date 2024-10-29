@@ -163,4 +163,7 @@ for entry in Δ
 end
 
 # Save the Laplacians in a serialized form in a file.
+if !isdir(joinpath(@__DIR__, "precomputed_laplacians"))
+    mkdir(joinpath(@__DIR__, "precomputed_laplacians"))
+end
 serialize(joinpath(@__DIR__, "precomputed_laplacians/sl"*string(n)*"_laplacians.sjl"), Δ)

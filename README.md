@@ -43,7 +43,7 @@ First compute the Laplacian in the relevant degrees. For this, run the following
 julia +1.9.4 --project=. ./scripts/laplacians_computation/sln_laplacians.jl n degree
 ```
 For $(4,6)$, this needs around 8 GB of available RAM. You can also replace `degree` by a list of numbers, e.g. writing `2 3 4 5` computes the Laplacians in degrees 2, 3, 4 and 5. But be aware that for `n` equal to 4, degree 4 takes more than an hour to compute.
-The Laplacians in the demanded degrees are saved in the [laplacians_computations](./scripts/laplacians_computation) directory. Precomputed versions of the Laplacians in all degrees are also provided on  [Zenodo](TO FILL).
+The Laplacians in the demanded degrees are saved in the [laplacians_computations](./scripts/laplacians_computation) directory. Precomputed versions of the Laplacians in all degrees are also provided.
 
 To compute the ranks of these Laplacians for the representations given in the paper, run the following command in the terminal in the `SLnCohomology` folder, replacing the parameter `n` by `3` or `4`.
 ```bash

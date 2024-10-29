@@ -1,6 +1,6 @@
-# Replication details for [TO FILL](TO FILL)
+# Replication details for ``Non-vanishing unitary cohomology of low-rank integral special linear groups'' by B. Brück, S. Hughes, D. Kielak, and P. Mizerka
 
-This code can be used to replicate the results of [arXiv preprint](TO FILL). It provides the necessary computations to prove that the cohomology groups $H^2(\text{SL}_3(\mathbb{Z}),\pi_3)$ and $H^3(\text{SL}_4(\mathbb{Z}),\pi_4)$ are non-zero for some orthogonal representations $\pi_3$ and $\pi_4$ all of whose invariant vectors are trivial.
+This code can be used to replicate the results of ``Non-vanishing unitary cohomology of low-rank integral special linear groups''. It provides the necessary computations to prove that the cohomology groups $H^2(\text{SL}_3(\mathbb{Z}),\pi_3)$ and $H^3(\text{SL}_4(\mathbb{Z}),\pi_4)$ are non-zero for some orthogonal representations $\pi_3$ and $\pi_4$ all of whose invariant vectors are trivial.
 
 One can express the rank of the cohomology groups as the rank of specific Laplacians built up from the homological data obtained from Voronoi tesselations of the associated symmetric spaces. We compute the ranks of these Laplacians.
 

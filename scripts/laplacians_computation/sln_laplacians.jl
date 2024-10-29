@@ -11,10 +11,9 @@ using SLnCohomology
 
 # The degree of SLₙ(ℤ)
 n = parse(Int64, ARGS[1])
+
 # The degrees of the Laplacian that the user wants to compute
 user_demanded_degrees = [parse(Int64, ARGS[i]) for i in 2:length(ARGS)]
-
-sln = MatrixGroups.SpecialLinearGroup{n}(Int8)
 
 # The boundary and stabiliser data
 cells_sln = SLnCohomology.cells_sln(n)
@@ -51,6 +50,7 @@ end
 
 # Compute the supports (i.e. half_bases) for the group rings to compute the Laplacians
 # - we just add to half_basis the coset elements appearing in the differentials.
+sln = MatrixGroups.SpecialLinearGroup{n}(Int8)
 d_union = Dict(k=>[one(sln)] for k in cell_degrees)
 for k in relevant_degrees_group_ring
     if !(k == min_degree) # in min_degree, all boundaries are trivial, so nothing needs to be added
@@ -127,27 +127,32 @@ for k in reasonable_demanded_degrees
         [(SLnCohomology.gelt_from_matrix(M,sln),eta) for (M,eta) in stab] for stab in stabilisers[k]
     ]
     stab_part_dim[k] = [
-        i == j ? one(RG_Δ[k])-SLnCohomology.averaged_rep(m_stabs[i],RG_Δ[k]) : zero(zero(RG_Δ[k])) 
+        i == j ? one(RG_Δ[k])-SLnCohomology.averaged_rep(m_stabs[i],RG_Δ[k]) : zero(RG_Δ[k]) 
         for i in 1:cells_number[k],j in 1:cells_number[k]
     ]
     # The above also verifies that the stabilisers' elements belong to the half bases.
+
+    @assert copy(stab_part_dim[k]')*stab_part_dim[k] == stab_part_dim[k]
 end
 
-# LEt's add a test saying that x^*x = x for x =  one(RG_Δ[k])-SLnCohomology.averaged_rep(m_stabs[i],RG_Δ[k]) : zero(zero(RG_Δ[k]))
-
-# Compute the Laplacians. (Currently in `meta code' -- to be corrected, as in line 141)
+# Compute the Laplacians.
 Δ = Dict()
 for k in reasonable_demanded_degrees
+    ID = [i == j ? one(RG_Δ[k]) : zero(RG_Δ[k]) for i in 1:cells_number[k], j in 1:cells_number[k]]
     if k == min_degree
         d_k_plus_1 = LowCohomologySOS.embed.(identity, d[k+1], Ref(RG_Δ[k]))
-        Δ[k] = d_k_plus_1*copy(d_k_plus_1')*[ID - stab_part_dim[k]] +stab_part_dim[k]
+        @assert copy(d_k_plus_1')*(ID - stab_part_dim[k]) == copy(d_k_plus_1')
+        Δ[k] = d_k_plus_1*(copy(d_k_plus_1')*(ID - stab_part_dim[k])) +stab_part_dim[k]
     elseif k == max_degree
         d_k = LowCohomologySOS.embed.(identity, d[k], Ref(RG_Δ[k]))
-        Δ[k] = copy(d_k')*d_k+stab_part_dim[k]
+        @assert d_k*(ID - stab_part_dim[k]) == d_k
+        Δ[k] = copy(d_k')*(d_k*(ID - stab_part_dim[k]))+stab_part_dim[k]
     else
         d_k = LowCohomologySOS.embed.(identity, d[k], Ref(RG_Δ[k]))
         d_k_plus_1 = LowCohomologySOS.embed.(identity, d[k+1], Ref(RG_Δ[k]))
-        Δ[k] = copy(d_k')*d_k+d_k_plus_1*copy(d_k_plus_1')+stab_part_dim[k]
+        @assert d_k*(ID - stab_part_dim[k]) == d_k
+        @assert copy(d_k_plus_1')*(ID - stab_part_dim[k]) == copy(d_k_plus_1')
+        Δ[k] = copy(d_k')*(d_k*(ID - stab_part_dim[k]))+d_k_plus_1*(copy(d_k_plus_1')*(ID - stab_part_dim[k]))+stab_part_dim[k]
     end
 end
 

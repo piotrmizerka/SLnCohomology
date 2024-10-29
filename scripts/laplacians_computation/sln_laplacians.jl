@@ -130,6 +130,7 @@ for k in reasonable_demanded_degrees
         i == j ? one(RG_Δ[k])-SLnCohomology.averaged_rep(m_stabs[i],RG_Δ[k]) : zero(RG_Δ[k]) 
         for i in 1:cells_number[k],j in 1:cells_number[k]
     ]
+    # SLnCohomology.averaged_rep(m_stabs[i],RG_Δ[k]) is v_sigma, where sigma is the k-cell with index i
     # The above also verifies that the stabilisers' elements belong to the half bases.
 
     @assert copy(stab_part_dim[k]')*stab_part_dim[k] == stab_part_dim[k]

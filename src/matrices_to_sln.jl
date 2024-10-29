@@ -68,7 +68,7 @@ function flip_two_rows(i::Integer, j::Integer, M::AbstractMatrix, sln)
     return result_factor, result_matrix
 end
 
-# SL(N,p) element correpsonding to matrix M.
+# SL(N,Z) element correpsonding to matrix M.
 function gelt_from_matrix(M::AbstractMatrix, sln)
     inv_result, temp_matrix = one(sln), copy(M)
     N = size(first(gens(sln)))[1]

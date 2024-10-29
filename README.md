@@ -43,7 +43,7 @@ First compute the Laplacian in the relevant degrees. For this, run the following
 julia +1.9.4 --project=. ./scripts/laplacians_computation/sln_laplacians.jl n degree
 ```
 For $(4,6)$, this needs around 8 GB of available RAM. You can also replace `degree` by a list of numbers, e.g. writing `2 3 4 5` computes the Laplacians in degrees 2, 3, 4 and 5. But be aware that for `n` equal to 4, degree 4 takes more than an hour to compute.
-The Laplacians in the demanded degrees are saved in the [laplacians_computations](./scripts/laplacians_computation) directory. Precomputed versions of the Laplacians in all degrees are also provided.
+The Laplacians in the demanded degrees are saved in the [laplacians_computations](./scripts/laplacians_computation) directory. Precomputed versions of the Laplacians in all degrees are provided on [Zenodo](TO FILL).
 
 To compute the ranks of these Laplacians for the representations given in the paper, run the following command in the terminal in the `SLnCohomology` folder, replacing the parameter `n` by `3` or `4`.
 ```bash
@@ -52,5 +52,5 @@ julia +1.9.4 --project=. ./scripts/sln_nontrivial_cohomology.jl n
 
 The running time of the script will be approximately `3` and `8` minutes on a standard laptop computer for the cases $n=3$ and $n=4$ respectively.
 
-There is also a possibility to run all the necessary operations in the [Jupyter notebook](./sln_non_trivial_cohomology.ipynb). The notebook contains procedures for $n=3,4$ and the homology degrees equal to $3$ and $6$ respectively (they correspond to the cohomologies of degrees $2$ and $3$ for $n=3$ and $n=4$).
+There is also a possibility to run all the necessary operations in the [Jupyter notebook](./sln_non_trivial_cohomology.ipynb). The notebook contains procedures for $n=3,4$ and the homology degrees equal to $3$ and $6$ respectively (they correspond to the cohomologies of degrees $2$ and $3$ for $n=3$ and $n=4$). You can run it using [IJulia](https://julialang.github.io/IJulia.jl/stable/).
 
